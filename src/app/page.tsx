@@ -9,7 +9,6 @@ import { BookTable } from '../components/book-table';
 import { FilenameTemplateInput } from '../components/filename-template-input';
 import { GenerateScriptButton } from '../components/generate-script-button';
 import { Lightbox } from '../components/lightbox';
-import { CsvImportExport } from '../components/csv-import-export';
 import { AppHeader } from '../components/app-header';
 
 export default function Home() {
@@ -66,11 +65,6 @@ export default function Home() {
                   ffmpeg installed and available in your system PATH
                 </Typography>
               </Box>
-            </Paper>
-
-            {/* CSV Import/Export Section */}
-            <Paper elevation={0} sx={{ p: 2, bgcolor: 'background.paper' }}>
-              <CsvImportExport books={books} onBooksChange={setBooks} />
             </Paper>
 
             {/* Book Table Section */}

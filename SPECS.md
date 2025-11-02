@@ -288,7 +288,7 @@ The application shall:
 
 ## REQ0031: CSV Import and Export
 The application shall:
-- Provide Export CSV and Import CSV buttons positioned above the table, aligned to the left
+- Provide Export CSV and Import CSV buttons positioned to the left of the "Clean" button, below the table.
 - Provide an Export CSV button that generates a CSV file containing all book data
 - Disable the Export CSV button when there are no books to export
 - Include column headers as the first row in exported CSV files
@@ -314,10 +314,10 @@ The application shall:
 
 ---
 
-## REQ0033: Add Row Button
+## REQ0033: Add Row Button and Clean Button Grouping
 The application shall:
-- Provide a floating action button (FAB) positioned below the table on the left side
-- Use a round button with a plus icon for adding new rows
-- Match the button style to the Material UI theme
-- Display the button in a flex container aligned to the left
+- Provide an "Add Row" floating action button (FAB) and a "Clean" button grouped together with the CSV Import/Export buttons below the table, aligned to the right.
+- Use a round button with a plus icon for adding new rows.
+- Match the button style to the Material UI theme.
+- Display the buttons in a flex container.
 

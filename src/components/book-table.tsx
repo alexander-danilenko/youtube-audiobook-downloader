@@ -9,6 +9,7 @@ import { useAppStore } from '../application/stores/app-store';
 import { useBookTable } from '../hooks/use-book-table';
 import { EditableCell } from './editable-cell';
 import { ThumbnailCell } from './thumbnail-cell';
+import { CsvImportExport } from './csv-import-export';
 
 const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
   preview: 80,
@@ -380,6 +381,7 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
         </Table>
       </TableContainer>
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1, width: '100%', maxWidth: 'none' }}>
+        <CsvImportExport books={books} onBooksChange={onBooksChange} />
         <Button
           variant="outlined"
           color="error"
@@ -389,13 +391,14 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
         >
           Clean
         </Button>
-        <Fab
+        <Button
+          variant="outlined"
           color="primary"
-          aria-label="add row"
+          startIcon={<AddIcon />}
           onClick={handleAddRow}
         >
-          <AddIcon />
-        </Fab>
+          Add Row
+        </Button>
       </Box>
 
       <Dialog
