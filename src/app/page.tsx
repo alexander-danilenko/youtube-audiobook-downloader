@@ -61,19 +61,19 @@ export default function Home() {
           <CsvImportExport books={books} onBooksChange={setBooks} />
         </Box>
       </Container>
-      
-      <BookTable
-        books={books}
-        onBooksChange={setBooks}
-        onThumbnailClick={setLightboxImage}
-      />
-      
+        
+        <BookTable
+          books={books}
+          onBooksChange={setBooks}
+          onThumbnailClick={setLightboxImage}
+        />
+        
       <Container maxWidth="xl" sx={{ py: 2 }}>
         <FilenameTemplateInput value={filenameTemplate} onChange={setFilenameTemplate} />
         <GenerateScriptButton books={books} filenameTemplate={filenameTemplate} />
       </Container>
-      
-      <Lightbox imageUrl={lightboxImage} onClose={() => setLightboxImage(null)} />
+        
+        <Lightbox imageUrl={lightboxImage} onClose={() => setLightboxImage(null)} />
     </Box>
   );
 }

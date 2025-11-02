@@ -36,8 +36,8 @@ export function Lightbox({ imageUrl, onClose }: LightboxProps) {
           justifyContent: 'center',
           p: 2,
         }}
-        onClick={onClose}
-      >
+      onClick={onClose}
+    >
         <IconButton
           onClick={onClose}
           sx={{

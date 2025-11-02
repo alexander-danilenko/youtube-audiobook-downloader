@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, KeyboardEvent } from 'react';
-import { TableCell, TextField, Box } from '@mui/material';
+import { TableCell, TextField, Box, Menu, MenuItem } from '@mui/material';
 import { BookDto } from '../application/dto/book-dto';
 import { CellPosition } from '../hooks/use-book-table';
 
@@ -34,6 +34,10 @@ export function EditableCell({
 }: EditableCellProps) {
   const [localValue, setLocalValue] = useState<string>(value?.toString() || '');
   const textFieldRef = useRef<HTMLInputElement>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
 
   // Sync value prop to local state when it changes externally
   // This is necessary to update local state when value prop changes from parent
@@ -60,6 +64,60 @@ export function EditableCell({
 
   const handleDoubleClick = (): void => {
     onEdit({ rowIndex, columnKey });
+  };
+
+  const handleContextMenu = (e: React.MouseEvent): void => {
+    // Only show context menu for text fields (not numbers or URL)
+    if (columnKey === 'seriesNumber' || columnKey === 'year' || columnKey === 'url') {
+      return;
+    }
+    e.preventDefault();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: e.clientX + 2,
+            mouseY: e.clientY - 6,
+          }
+        : null,
+    );
+  };
+
+  const handleCloseContextMenu = (): void => {
+    setContextMenu(null);
+  };
+
+  const transformText = (transformType: 'uppercase' | 'lowercase' | 'titleCase' | 'sentenceCase'): void => {
+    const currentValue = value?.toString() || '';
+    let transformedValue: string;
+
+    switch (transformType) {
+      case 'uppercase':
+        transformedValue = currentValue.toUpperCase();
+        break;
+      case 'lowercase':
+        transformedValue = currentValue.toLowerCase();
+        break;
+      case 'titleCase':
+        transformedValue = currentValue
+          .toLowerCase()
+          .split(' ')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        break;
+      case 'sentenceCase':
+        transformedValue = currentValue.charAt(0).toUpperCase() + currentValue.slice(1).toLowerCase();
+        break;
+    }
+
+    if (isSelected) {
+      // Apply to all selected cells
+      onUpdateSelected(parseValue(transformedValue, columnKey));
+    } else {
+      // Apply to current cell only
+      onUpdate(rowIndex, columnKey, parseValue(transformedValue, columnKey));
+    }
+
+    handleCloseContextMenu();
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
@@ -154,6 +212,7 @@ export function EditableCell({
       }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
+      onContextMenu={handleContextMenu}
     >
       {isEditing ? (
         <TextField
@@ -191,6 +250,19 @@ export function EditableCell({
           {displayValue}
         </Box>
       )}
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleCloseContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined
+        }
+      >
+        <MenuItem onClick={() => transformText('uppercase')}>UPPERCASE</MenuItem>
+        <MenuItem onClick={() => transformText('lowercase')}>lowercase</MenuItem>
+        <MenuItem onClick={() => transformText('sentenceCase')}>Sentence case</MenuItem>
+        <MenuItem onClick={() => transformText('titleCase')}>Name Case</MenuItem>
+      </Menu>
     </TableCell>
   );
 }

@@ -59,7 +59,7 @@ export function ThumbnailCell({ url, onThumbnailClick, widthPercent }: Thumbnail
     >
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <IconButton
-          onClick={handleClick}
+        onClick={handleClick}
           sx={{
             width: 56,
             height: 40,
@@ -72,17 +72,17 @@ export function ThumbnailCell({ url, onThumbnailClick, widthPercent }: Thumbnail
               opacity: 0.8,
             },
           }}
-        >
+      >
           <Box
             component="img"
-            src={thumbnailUrl}
-            alt="Video thumbnail"
+          src={thumbnailUrl}
+          alt="Video thumbnail"
             sx={{
               width: '100%',
               height: '100%',
               objectFit: 'cover',
             }}
-          />
+        />
         </IconButton>
       </Box>
     </TableCell>

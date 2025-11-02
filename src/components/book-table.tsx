@@ -183,7 +183,7 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
           {isResizable && (
             <Box
               className="resize-handle"
-              onMouseDown={(e) => handleResizeStart(columnKey, e)}
+            onMouseDown={(e) => handleResizeStart(columnKey, e)}
               sx={{
                 position: 'absolute',
                 right: 0,
@@ -197,8 +197,8 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
                   bgcolor: 'primary.light',
                 },
               }}
-              title="Drag to resize column"
-            />
+            title="Drag to resize column"
+          />
           )}
         </Box>
       </TableCell>
@@ -238,68 +238,68 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
         <Table sx={{ tableLayout: 'fixed', width: '100%' }}>
           <TableHead>
             <TableRow>
-              {renderResizableHeader('preview', 'Preview')}
-              {columns.map((col) => renderResizableHeader(col.key, col.label))}
+            {renderResizableHeader('preview', 'Preview')}
+            {columns.map((col) => renderResizableHeader(col.key, col.label))}
               {renderResizableHeader('actions', '', false)}
             </TableRow>
           </TableHead>
           <TableBody>
-            {books.map((book, rowIndex) => {
-              const isRowSelected = Array.from(selectedCells).some((key) => key.startsWith(`${rowIndex}:`));
+          {books.map((book, rowIndex) => {
+            const isRowSelected = Array.from(selectedCells).some((key) => key.startsWith(`${rowIndex}:`));
 
-              return (
+            return (
                 <TableRow
-                  key={book.id}
-                  draggable
-                  onDragStart={() => handleDragStart(rowIndex)}
-                  onDragOver={(e) => handleDragOver(e, rowIndex)}
-                  onDrop={(e) => handleDrop(e, rowIndex)}
-                  onDragEnd={handleDragEnd}
+                key={book.id}
+                draggable
+                onDragStart={() => handleDragStart(rowIndex)}
+                onDragOver={(e) => handleDragOver(e, rowIndex)}
+                onDrop={(e) => handleDrop(e, rowIndex)}
+                onDragEnd={handleDragEnd}
                   sx={{
                     opacity: draggedRowIndex === rowIndex ? 0.5 : 1,
                     bgcolor: isRowSelected ? 'action.selected' : 'background.paper',
                   }}
-                >
-                  <ThumbnailCell 
-                    url={book.url} 
-                    onThumbnailClick={onThumbnailClick}
-                    widthPercent={getColumnWidthPercent('preview')}
-                  />
-                  {columns.map((col) => {
-                    const isSelected = selectedCells.has(`${rowIndex}:${col.key}`);
-                    const isEditing =
-                      editingCell?.rowIndex === rowIndex && editingCell?.columnKey === col.key;
-                    const widthPercent = getColumnWidthPercent(col.key);
+              >
+                <ThumbnailCell 
+                  url={book.url} 
+                  onThumbnailClick={onThumbnailClick}
+                  widthPercent={getColumnWidthPercent('preview')}
+                />
+                {columns.map((col) => {
+                  const isSelected = selectedCells.has(`${rowIndex}:${col.key}`);
+                  const isEditing =
+                    editingCell?.rowIndex === rowIndex && editingCell?.columnKey === col.key;
+                  const widthPercent = getColumnWidthPercent(col.key);
 
-                    return (
-                      <EditableCell
-                        key={col.key}
-                        value={book[col.key]}
-                        rowIndex={rowIndex}
-                        columnKey={col.key}
-                        isSelected={isSelected}
-                        isEditing={isEditing}
-                        widthPercent={widthPercent}
-                        onSelect={(rowIdx, colKey, isMulti) => {
-                          selectCell(rowIdx, colKey, isMulti);
-                        }}
-                        onEdit={setEditingCell}
-                        onUpdate={(rowIdx, colKey, val) => {
-                          const updatedBooks = [...books];
-                          updatedBooks[rowIdx] = { ...updatedBooks[rowIdx], [colKey]: val };
-                          onBooksChange(updatedBooks);
-                        }}
-                        onUpdateSelected={(val) => {
-                          const updatedBooks = [...books];
-                          updateSelectedCells(val, (rowIdx, colKey, value) => {
-                            updatedBooks[rowIdx] = { ...updatedBooks[rowIdx], [colKey]: value };
-                          });
-                          onBooksChange(updatedBooks);
-                        }}
-                        onMoveToNextCell={moveToNextCell}
-                      />
-                    );
-                  })}
+                  return (
+                    <EditableCell
+                      key={col.key}
+                      value={book[col.key]}
+                      rowIndex={rowIndex}
+                      columnKey={col.key}
+                      isSelected={isSelected}
+                      isEditing={isEditing}
+                      widthPercent={widthPercent}
+                      onSelect={(rowIdx, colKey, isMulti) => {
+                        selectCell(rowIdx, colKey, isMulti);
+                      }}
+                      onEdit={setEditingCell}
+                      onUpdate={(rowIdx, colKey, val) => {
+                        const updatedBooks = [...books];
+                        updatedBooks[rowIdx] = { ...updatedBooks[rowIdx], [colKey]: val };
+                        onBooksChange(updatedBooks);
+                      }}
+                      onUpdateSelected={(val) => {
+                        const updatedBooks = [...books];
+                        updateSelectedCells(val, (rowIdx, colKey, value) => {
+                          updatedBooks[rowIdx] = { ...updatedBooks[rowIdx], [colKey]: value };
+                        });
+                        onBooksChange(updatedBooks);
+                      }}
+                      onMoveToNextCell={moveToNextCell}
+                    />
+                  );
+                })}
                   <TableCell 
                     sx={{
                       width: `${getColumnWidthPercent('actions')}%`,
@@ -307,23 +307,23 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
                       overflow: 'hidden',
                       textAlign: 'center',
                     }}
-                  >
+                >
                     <Button
-                      onClick={() => {
-                        const updatedBooks = books.filter((_, i) => i !== rowIndex);
-                        onBooksChange(updatedBooks);
-                      }}
+                    onClick={() => {
+                      const updatedBooks = books.filter((_, i) => i !== rowIndex);
+                      onBooksChange(updatedBooks);
+                    }}
                       variant="outlined"
                       color="secondary"
                       size="small"
                       sx={{ textTransform: 'none' }}
-                    >
-                      Remove
+                  >
+                    Remove
                     </Button>
                   </TableCell>
                 </TableRow>
-              );
-            })}
+            );
+          })}
           </TableBody>
         </Table>
       </TableContainer>

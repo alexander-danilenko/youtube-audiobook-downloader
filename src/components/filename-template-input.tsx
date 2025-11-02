@@ -20,9 +20,9 @@ export function FilenameTemplateInput({ value, onChange }: FilenameTemplateInput
       </Typography>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <TextField
-          id="filename-template"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+        id="filename-template"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
           placeholder={DEFAULT_FILENAME_TEMPLATE}
           fullWidth
           variant="outlined"
