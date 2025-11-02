@@ -7,22 +7,6 @@ This document defines the functional requirements for the YT Audiobook Downloade
 
 ## Functional Requirements
 
-### REQ0001: Book Information Input
-- Allow users to input book information in a table format with the following fields:
-  - YouTube URL (required)
-  - Book Title (required)
-  - Book Author (required)
-  - Narrator (required)
-  - Book Series Name (optional)
-  - Book Series Number (optional, defaults to 1)
-  - Year (optional)
-
-### REQ0003: Book Entry Management
-- Allow users to:
-  - Add new book entries
-  - Remove existing book entries
-  - Have at least one book entry available at all times
-
 ### REQ0004: Input Field Editing
 - Allow users to edit input field values by:
   - Typing to modify the field value
@@ -171,7 +155,7 @@ This document defines the functional requirements for the YT Audiobook Downloade
 - Ensure proper loading and display of YouTube thumbnails.
 
 ### REQ0035: Book Entry Table View
-- Display book entries in a scrollable table format.
+- Display book entries in a scrollable table format within the `BookList` component.
 - Each row in the table will represent a book entry.
 - The table will have columns for Thumbnail, YouTube URL, Title, Author, Narrator, Series, Series #, Year, and Actions.
 - Use `EditableCell` for editable text fields and `ThumbnailCell` for thumbnail display within the table.
