@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Fab } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { BookDto } from '../application/dto/book-dto';
 import { useAppStore } from '../application/stores/app-store';
 import { useBookTable } from '../hooks/use-book-table';
@@ -44,6 +45,7 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
   const [resizingColumn, setResizingColumn] = useState<string | null>(null);
   const [resizeStartX, setResizeStartX] = useState<number>(0);
   const [resizeStartWidth, setResizeStartWidth] = useState<number>(0);
+  const [cleanDialogOpen, setCleanDialogOpen] = useState<boolean>(false);
 
   const handleDragStart = (index: number): void => {
     setDraggedRowIndex(index);
@@ -213,6 +215,19 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
     onBooksChange([...books, newBook]);
   };
 
+  const handleCleanClick = (): void => {
+    setCleanDialogOpen(true);
+  };
+
+  const handleCleanConfirm = (): void => {
+    onBooksChange([]);
+    setCleanDialogOpen(false);
+  };
+
+  const handleCleanCancel = (): void => {
+    setCleanDialogOpen(false);
+  };
+
   return (
     <Box sx={{ width: '100%', overflowX: 'hidden' }}>
       <TableContainer component={Paper} sx={{ width: '100%', overflowX: 'hidden' }}>
@@ -306,7 +321,16 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-start' }}>
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={handleCleanClick}
+          disabled={books.length === 0}
+        >
+          Clean
+        </Button>
         <Fab
           color="primary"
           aria-label="add row"
@@ -315,6 +339,24 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
           <AddIcon />
         </Fab>
       </Box>
+
+      <Dialog
+        open={cleanDialogOpen}
+        onClose={handleCleanCancel}
+      >
+        <DialogTitle>Clear Table</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to clear all books from the table? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCleanCancel}>Cancel</Button>
+          <Button onClick={handleCleanConfirm} color="error" variant="contained">
+            Clear
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
