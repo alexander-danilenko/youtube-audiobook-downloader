@@ -22,9 +22,10 @@
 5. **DIP**: Depend on abstractions (interfaces), not concretions. Use DI for all dependencies
 
 ## BUILD & TEST
-- Build: `npm run build` (verify: `tsc --noEmit`)
-- Test: `npm test` (if configured)
-- Lint: `npm run lint` (auto-fix: `npm run lint -- --fix`)
+- **Package Manager**: This project uses **Yarn exclusively**. Do not use npm or other package managers.
+- Build: `yarn build` (verify: `tsc --noEmit`)
+- Test: `yarn test` (if configured)
+- Lint: `yarn lint` (auto-fix: `yarn lint --fix`)
 
 ## SPECIFICATIONS & REQUIREMENTS
 - **MANDATORY**: Keep `SPECS.md` and code implementation synchronized at all times
