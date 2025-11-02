@@ -40,21 +40,27 @@ export default function Home() {
           <Stack spacing={3}>
             {/* Introduction Section */}
             <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper' }}>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                The YT Audiobook Downloader is a client-side tool designed to simplify the process of downloading audiobooks from YouTube. 
-                It allows you to compile a list of YouTube video URLs and associated book metadata (title, author, narrator, series, year). 
-                The application then generates a shell script that leverages{' '}
-                <Typography component="code" variant="inherit" sx={{ bgcolor: 'action.hover', px: 0.5, borderRadius: 0.5, fontFamily: 'monospace' }}>
-                  yt-dlp
+              <Stack spacing={2}>
+                <Typography variant="body1">
+                  Downloading audiobooks from YouTube and adding metadata like title, author, chapters, and cover art takes time. This browser-based tool prepares a list of YouTube video links and book details, then generates a script that handles everything automatically.
                 </Typography>
-                {' '}and{' '}
-                <Typography component="code" variant="inherit" sx={{ bgcolor: 'action.hover', px: 0.5, borderRadius: 0.5, fontFamily: 'monospace' }}>
-                  ffmpeg
+                
+                <Typography variant="body1">
+                  For each video link, you enter book information: title, author, narrator, series, and year. The app generates a script that uses{' '}
+                  <Typography component="code" variant="inherit" sx={{ bgcolor: 'action.hover', px: 0.5, borderRadius: 0.5, fontFamily: 'monospace' }}>
+                    yt-dlp
+                  </Typography>
+                  {' '}to <strong>download the video and extract the audio</strong>. Then{' '}
+                  <Typography component="code" variant="inherit" sx={{ bgcolor: 'action.hover', px: 0.5, borderRadius: 0.5, fontFamily: 'monospace' }}>
+                    ffmpeg
+                  </Typography>
+                  {' '}embeds the metadata, adds chapter markers (if available), and incorporates cover art into the audio files.
                 </Typography>
-                {' '}to download the audio, 
-                embed comprehensive metadata, chapters, and cover art thumbnails directly into the audio files. 
-                This ensures your downloaded audiobooks are well-organized and ready for your preferred media player.
-              </Typography>
+                
+                <Typography variant="body1">
+                  Everything runs in your browser - your data stays on your computer. Run the generated script in your terminal to download and process the audiobooks.
+                </Typography>
+              </Stack>
             </Paper>
 
             {/* Book Table Section */}
@@ -79,7 +85,7 @@ export default function Home() {
                   onCookiesBrowserChange={setCookiesBrowser}
                 />
                 <Alert severity="warning">
-                  <Link href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" underline="hover">
+                  <strong>Warning</strong>: You need to have <Link href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" underline="hover">
                     yt-dlp
                   </Link>
                   {' '}and{' '}
