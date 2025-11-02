@@ -167,8 +167,13 @@ export function EditableCell({
           variant="standard"
           sx={{
             width: '100%',
+            '& .MuiInputBase-root': {
+              padding: '0 2px',
+              minHeight: 'unset',
+            },
             '& .MuiInputBase-input': {
-              padding: 0,
+              padding: '2px 0',
+              fontSize: '0.875rem',
             },
           }}
         />

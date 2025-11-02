@@ -54,34 +54,37 @@ export function ThumbnailCell({ url, onThumbnailClick, widthPercent }: Thumbnail
         overflow: 'hidden',
         border: '1px solid',
         borderColor: 'divider',
+        textAlign: 'center',
       }}
     >
-      <IconButton
-        onClick={handleClick}
-        sx={{
-          width: 56,
-          height: 40,
-          overflow: 'hidden',
-          borderRadius: 1,
-          border: '1px solid',
-          borderColor: 'divider',
-          padding: 0,
-          '&:hover': {
-            opacity: 0.8,
-          },
-        }}
-      >
-        <Box
-          component="img"
-          src={thumbnailUrl}
-          alt="Video thumbnail"
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <IconButton
+          onClick={handleClick}
           sx={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            width: 56,
+            height: 40,
+            overflow: 'hidden',
+            borderRadius: 1,
+            border: '1px solid',
+            borderColor: 'divider',
+            padding: 0,
+            '&:hover': {
+              opacity: 0.8,
+            },
           }}
-        />
-      </IconButton>
+        >
+          <Box
+            component="img"
+            src={thumbnailUrl}
+            alt="Video thumbnail"
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </IconButton>
+      </Box>
     </TableCell>
   );
 }

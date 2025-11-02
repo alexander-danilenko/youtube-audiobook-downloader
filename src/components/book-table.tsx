@@ -19,7 +19,7 @@ const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
   series: 150,
   seriesNumber: 80,
   year: 80,
-  actions: 100,
+  actions: 70, // Reduced width to fit "Remove" text
 };
 
 interface BookTableProps {
@@ -138,6 +138,8 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
 
   const renderResizableHeader = (columnKey: string, label: string, isButton: boolean = false) => {
     const widthPercent = getColumnWidthPercent(columnKey);
+    const isResizable = columnKey !== 'preview' && columnKey !== 'actions';
+    
     return (
       <TableCell
         key={columnKey}
@@ -178,24 +180,26 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
               {label}
             </Box>
           )}
-          <Box
-            className="resize-handle"
-            onMouseDown={(e) => handleResizeStart(columnKey, e)}
-            sx={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: '4px',
-              marginRight: '-2px',
-              zIndex: 10,
-              cursor: 'col-resize',
-              '&:hover': {
-                bgcolor: 'primary.light',
-              },
-            }}
-            title="Drag to resize column"
-          />
+          {isResizable && (
+            <Box
+              className="resize-handle"
+              onMouseDown={(e) => handleResizeStart(columnKey, e)}
+              sx={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                bottom: 0,
+                width: '4px',
+                marginRight: '-2px',
+                zIndex: 10,
+                cursor: 'col-resize',
+                '&:hover': {
+                  bgcolor: 'primary.light',
+                },
+              }}
+              title="Drag to resize column"
+            />
+          )}
         </Box>
       </TableCell>
     );
@@ -236,7 +240,7 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
             <TableRow>
               {renderResizableHeader('preview', 'Preview')}
               {columns.map((col) => renderResizableHeader(col.key, col.label))}
-              {renderResizableHeader('actions', 'Actions', true)}
+              {renderResizableHeader('actions', '', false)}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -301,6 +305,7 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
                       width: `${getColumnWidthPercent('actions')}%`,
                       maxWidth: `${getColumnWidthPercent('actions')}%`,
                       overflow: 'hidden',
+                      textAlign: 'center',
                     }}
                   >
                     <Button
@@ -308,7 +313,8 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
                         const updatedBooks = books.filter((_, i) => i !== rowIndex);
                         onBooksChange(updatedBooks);
                       }}
-                      color="error"
+                      variant="outlined"
+                      color="secondary"
                       size="small"
                       sx={{ textTransform: 'none' }}
                     >
