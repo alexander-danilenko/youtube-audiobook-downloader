@@ -53,8 +53,12 @@ export function CsvImportExport({ books, onBooksChange }: CsvImportExportProps) 
       }).join(','))
     ].join('\n');
 
+    // Add UTF-8 BOM for Excel compatibility with Cyrillic and other non-ASCII characters
+    const BOM = '\uFEFF';
+    const csvWithBom = BOM + csvContent;
+
     // Create blob and download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvWithBom], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
