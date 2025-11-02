@@ -3,6 +3,7 @@ import { themeColors } from "./src/config/theme";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
   images: {
     // domains: ['img.youtube.com'], // Deprecated in Next.js 13+
     remotePatterns: [
