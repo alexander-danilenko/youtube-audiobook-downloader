@@ -208,7 +208,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         }, 500);
       }
     }
-  }, [localBook, onBookChange, attemptFetchMetadata]);
+  }, [localBook, onBookChange, attemptFetchMetadata, skipAutoMetadataFetch]);
 
   useEffect(() => {
     return () => {
@@ -301,7 +301,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                   <IconButton
                     size="small"
                     onClick={() => attemptFetchMetadata(localBook.url.trim())}
-                    disabled={!localBook.url.trim() || skipAutoMetadataFetch}
+                    disabled={!localBook.url.trim() || isLoading}
                     title="Refresh metadata from YouTube"
                   >
                     <AutorenewIcon fontSize="small" />
