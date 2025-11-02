@@ -1,11 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppStore, AppState } from './app-store';
 import { IndexedDbStorageRepository } from '../../infrastructure/repositories/indexed-db-storage-repository';
 
 const storageRepo = new IndexedDbStorageRepository();
 const DEBOUNCE_MS = 500;
 
-export function usePersistStore(): void {
+export function usePersistStore(): boolean {
+  const [isHydrated, setIsHydrated] = useState(false);
   const isInitialized = useRef(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const books = useAppStore((state) => state.books);
@@ -34,6 +35,7 @@ export function usePersistStore(): void {
         console.error('Failed to load state from IndexedDB:', error);
       } finally {
         isInitialized.current = true;
+        setIsHydrated(true);
       }
     };
 
@@ -71,5 +73,7 @@ export function usePersistStore(): void {
       }
     };
   }, [books, filenameTemplate, columnWidths]);
+
+  return isHydrated;
 }
 

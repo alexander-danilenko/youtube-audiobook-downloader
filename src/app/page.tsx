@@ -12,8 +12,8 @@ import { Lightbox } from '../components/lightbox';
 import { CsvImportExport } from '../components/csv-import-export';
 
 export default function Home() {
-  // Initialize persistence
-  usePersistStore();
+  // Initialize persistence and wait for hydration
+  const isHydrated = usePersistStore();
 
   // Get state from store
   const books = useAppStore((state) => state.books);
@@ -23,6 +23,11 @@ export default function Home() {
 
   // Local UI state (not persisted)
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  // Prevent hydration mismatch by not rendering until state is loaded
+  if (!isHydrated) {
+    return null;
+  }
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', overflowX: 'hidden' }}>
