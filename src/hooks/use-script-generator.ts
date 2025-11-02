@@ -23,9 +23,29 @@ export function useScriptGenerator() {
     URL.revokeObjectURL(url);
   }, [generateScript]);
 
+  const copyDownloadString = useCallback(async (books: BookDto[], filenameTemplate: string): Promise<void> => {
+    const useCase = container.resolve(GenerateShellScriptUseCase);
+    const downloadString = useCase.executeDownloadString({ books, filenameTemplate });
+    
+    try {
+      await navigator.clipboard.writeText(downloadString);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = downloadString;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  }, []);
+
   return {
     generateScript,
     downloadScript,
+    copyDownloadString,
   };
 }
 

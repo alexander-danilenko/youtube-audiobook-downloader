@@ -7,7 +7,7 @@ import { useAppStore } from '../application/stores/app-store';
 import { usePersistStore } from '../application/stores/storage-store';
 import { BookList } from '../components/book-list';
 import { FilenameTemplateInput } from '../components/filename-template-input';
-import { GenerateScriptButton } from '../components/generate-script-button';
+import { GetDownloadCommandButton } from '../components/generate-script-button';
 import { Lightbox } from '../components/lightbox';
 import { AppHeader } from '../components/app-header';
 
@@ -81,7 +81,7 @@ export default function Home() {
                   </Link>
                   {' '}need to be installed in order for the script to work.
                 </Alert>
-                <GenerateScriptButton books={books} filenameTemplate={filenameTemplate} />
+                <GetDownloadCommandButton books={books} filenameTemplate={filenameTemplate} />
               </Stack>
             </Paper>
           </Stack>

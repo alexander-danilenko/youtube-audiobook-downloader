@@ -19,5 +19,12 @@ export class GenerateShellScriptUseCase {
       scriptContent,
     };
   }
+
+  public executeDownloadString(input: ScriptGenerationDto): string {
+    return this.scriptGenerator.generateDownloadString(
+      input.books,
+      input.filenameTemplate
+    );
+  }
 }
 
