@@ -116,7 +116,9 @@ The application shall:
 
 ## REQ0013: Filename Template Input
 The application shall:
-- Provide an editable input field for the filename template above the table
+- Provide an editable input field for the filename template below the table
+- Wrap the filename template input in a fieldset with a legend
+- Include a Reset button next to the input field that resets the template to the default value
 - Default template: `$author - [$series - $series_num] - $title [$narrator].%(ext)s`
 - Support custom variables: `$author`, `$title`, `$narrator`, `$series`, `$series_num`, `$year`
 - Support yt-dlp placeholders: `%(ext)s`, `%(title)s`, and other standard yt-dlp placeholders
@@ -127,6 +129,7 @@ The application shall:
 ## REQ0014: Filename Template Processing
 The application shall:
 - Replace template variables with actual book data when generating filenames
+- Replace longer variable names first (e.g., `$series_num` before `$series`) to avoid partial matches
 - Remove empty optional fields enclosed in brackets `[]` from the final filename
 - Clean up multiple spaces and separators in generated filenames
 - Preserve yt-dlp placeholders as-is in the generated script
@@ -280,4 +283,41 @@ The application shall:
 - Provide appropriate ARIA labels for interactive elements
 - Use semantic HTML elements where applicable
 - Ensure sufficient color contrast for readability
+
+---
+
+## REQ0031: CSV Import and Export
+The application shall:
+- Provide Export CSV and Import CSV buttons positioned above the table, aligned to the left
+- Provide an Export CSV button that generates a CSV file containing all book data
+- Disable the Export CSV button when there are no books to export
+- Include column headers as the first row in exported CSV files
+- Export CSV columns in the following order: YouTube URL, Book Title, Author, Narrator, Series Name, Series #, Year
+- Properly escape commas, quotes, and newlines in CSV cell values
+- Provide an Import CSV button that opens a file selection dialog
+- Display a dialog with a checkbox option to indicate whether the CSV file contains a header row
+- Default the header row checkbox to enabled/checked
+- Parse imported CSV files and map rows to book data structure
+- Replace existing book data with imported data when importing
+- Handle CSV parsing errors gracefully and display user-friendly error messages
+- Support quoted fields with escaped quotes in CSV parsing
+- Skip incomplete rows during CSV import if they have fewer columns than expected
+
+---
+
+## REQ0032: Page Description and Prerequisites
+The application shall:
+- Display a descriptive title "YouTube Audiobook Script Generator" at the top of the page
+- Provide a description explaining what the application does and its purpose
+- List prerequisites (yt-dlp and ffmpeg) with instructions that they must be installed and available in system PATH
+- Display the description and prerequisites in a clearly formatted section above the table
+
+---
+
+## REQ0033: Add Row Button
+The application shall:
+- Provide a floating action button (FAB) positioned below the table on the left side
+- Use a round button with a plus icon for adding new rows
+- Match the button style to the Material UI theme
+- Display the button in a flex container aligned to the left
 
