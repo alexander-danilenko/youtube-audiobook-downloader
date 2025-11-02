@@ -53,7 +53,22 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
   };
 
   const handleBookRemove = (bookId: string): void => {
-    onBooksChange(books.filter((book) => book.id !== bookId));
+    // If this is the last book, replace it with a new empty book instead of removing it
+    if (books.length === 1) {
+      const newBook: BookDto = {
+        id: Date.now().toString(),
+        url: '',
+        title: '',
+        author: '',
+        narrator: '',
+        series: '',
+        seriesNumber: 1,
+        year: undefined,
+      };
+      onBooksChange([newBook]);
+    } else {
+      onBooksChange(books.filter((book) => book.id !== bookId));
+    }
   };
 
   return (
