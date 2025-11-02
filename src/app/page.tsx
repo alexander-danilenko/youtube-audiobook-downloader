@@ -9,6 +9,7 @@ import { BookTable } from '../components/book-table';
 import { FilenameTemplateInput } from '../components/filename-template-input';
 import { GenerateScriptButton } from '../components/generate-script-button';
 import { Lightbox } from '../components/lightbox';
+import { CsvImportExport } from '../components/csv-import-export';
 
 export default function Home() {
   // Initialize persistence
@@ -49,6 +50,10 @@ export default function Home() {
               ffmpeg installed and available in your system PATH
             </Typography>
           </Box>
+        </Box>
+        
+        <Box sx={{ mb: 2 }}>
+          <CsvImportExport books={books} onBooksChange={setBooks} />
         </Box>
       </Container>
       

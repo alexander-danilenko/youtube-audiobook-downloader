@@ -35,8 +35,12 @@ export function EditableCell({
   const [localValue, setLocalValue] = useState<string>(value?.toString() || '');
   const textFieldRef = useRef<HTMLInputElement>(null);
 
+  // Sync value prop to local state when it changes externally
+  // This is necessary to update local state when value prop changes from parent
   useEffect(() => {
-    setLocalValue(value?.toString() || '');
+    const stringValue = value?.toString() || '';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalValue(stringValue);
   }, [value]);
 
   useEffect(() => {

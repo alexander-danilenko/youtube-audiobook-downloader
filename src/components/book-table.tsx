@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import AddIcon from '@mui/icons-material/Add';
 import { BookDto } from '../application/dto/book-dto';
 import { useAppStore } from '../application/stores/app-store';
-import { useBookTable, CellPosition } from '../hooks/use-book-table';
+import { useBookTable } from '../hooks/use-book-table';
 import { EditableCell } from './editable-cell';
 import { ThumbnailCell } from './thumbnail-cell';
 
@@ -226,7 +226,6 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
           </TableHead>
           <TableBody>
             {books.map((book, rowIndex) => {
-              const cellKey = `${rowIndex}:${columns[0].key}`;
               const isRowSelected = Array.from(selectedCells).some((key) => key.startsWith(`${rowIndex}:`));
 
               return (
