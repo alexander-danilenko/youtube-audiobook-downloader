@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableBody, TableCell, TableHead, TableRow, Paper, TableContainer, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { BookDto } from '../application/dto/book-dto';
@@ -10,16 +10,15 @@ import { useBookTable } from '../hooks/use-book-table';
 import { EditableCell } from './editable-cell';
 import { ThumbnailCell } from './thumbnail-cell';
 import { CsvImportExport } from './csv-import-export';
-import { BookCard } from './book-card';
 
 
-interface BookListProps {
+interface BookTableProps {
   books: BookDto[];
   onBooksChange: (books: BookDto[]) => void;
   onThumbnailClick: (imageUrl: string) => void;
 }
 
-export function BookList({ books, onBooksChange, onThumbnailClick }: BookListProps) {
+export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableProps) {
   const [cleanDialogOpen, setCleanDialogOpen] = useState<boolean>(false);
 
   const handleAddRow = (): void => {
@@ -58,18 +57,59 @@ export function BookList({ books, onBooksChange, onThumbnailClick }: BookListPro
   };
 
   return (
-    <Box sx={{ width: '100%', overflowX: 'hidden', maxWidth: 'none', p: 2 }}>
-      <Box>
-        {books.map((book) => (
-          <BookCard
-            key={book.id}
-            book={book}
-            onBookChange={handleBookChange}
-            onRemove={() => handleBookRemove(book.id)}
-            onThumbnailClick={onThumbnailClick}
-          />
-        ))}
-      </Box>
+    <Box sx={{ width: '100%', overflowX: 'auto', p: 2 }}>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Thumbnail</TableCell>
+              <TableCell>YouTube URL</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Author</TableCell>
+              <TableCell>Narrator</TableCell>
+              <TableCell>Series</TableCell>
+              <TableCell>Series #</TableCell>
+              <TableCell>Year</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {books.map((book) => (
+              <TableRow key={book.id}>
+                <TableCell>
+                  <ThumbnailCell videoUrl={book.url} onThumbnailClick={onThumbnailClick} />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.url} onChange={(value) => handleBookChange({ ...book, url: value as string })} />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.title} onChange={(value) => handleBookChange({ ...book, title: value as string })} />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.author} onChange={(value) => handleBookChange({ ...book, author: value as string })} />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.narrator} onChange={(value) => handleBookChange({ ...book, narrator: value as string })} />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.series} onChange={(value) => handleBookChange({ ...book, series: value as string })} />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.seriesNumber} onChange={(value) => handleBookChange({ ...book, seriesNumber: value as number })} type="number" />
+                </TableCell>
+                <TableCell>
+                  <EditableCell value={book.year} onChange={(value) => handleBookChange({ ...book, year: value as number })} type="number" />
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleBookRemove(book.id)} color="error" aria-label="remove book">
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1, width: '100%', maxWidth: 'none' }}>
         <CsvImportExport books={books} onBooksChange={onBooksChange} />
         <Button

@@ -6,7 +6,7 @@ This document defines the functional requirements for the YouTube Audiobook Scri
 ---
 
 ## REQ0001: Book Information Input
-The application shall allow users to input book information in a card format with the following fields:
+The application shall allow users to input book information in a table format with the following fields:
 - YouTube URL (required)
 - Book Title (required)
 - Book Author (required)
@@ -35,7 +35,7 @@ The application shall allow users to edit input field values by:
 ## REQ0011: YouTube Thumbnail Display
 The application shall:
 - Automatically extract and display a thumbnail image when a valid YouTube URL is entered
-- Display a small thumbnail (medium quality) in each book card
+- Display a small thumbnail (medium quality) in each book entry row
 - Show "No preview" message when no URL is provided or URL is invalid
 - Display thumbnails without requiring API calls
 
@@ -149,9 +149,9 @@ The application shall:
 
 ---
 
-## REQ0026: Book Card Actions
+## REQ0026: Book Entry Actions
 The application shall:
-- Provide a "Remove" button in each book card
+- Provide a "Remove" button in each book entry row
 - Allow removing individual book entries via the Remove button
 - Not persist UI interaction state (editing mode) across page refreshes
 
@@ -225,4 +225,22 @@ The application shall:
 - Provide an "Add New Book" button and a "Clean" button grouped together with the CSV Import/Export buttons below the book entries, aligned to the right.
 - Match the button style to the Material UI theme.
 - Display the buttons in a flex container.
+
+---
+
+## REQ0034: Image Host Configuration
+The application shall:
+- Configure `next.config.ts` to allow images from `img.youtube.com` via `remotePatterns`.
+- Ensure proper loading and display of YouTube thumbnails.
+
+---
+
+## REQ0035: Book Entry Table View
+The application shall:
+- Display book entries in a scrollable table format.
+- Each row in the table will represent a book entry.
+- The table will have columns for Thumbnail, YouTube URL, Title, Author, Narrator, Series, Series #, Year, and Actions.
+- Use `EditableCell` for editable text fields and `ThumbnailCell` for thumbnail display within the table.
+- Allow inline editing of book details directly within the table cells.
+- Provide an action column with a button to remove individual book entries.
 
