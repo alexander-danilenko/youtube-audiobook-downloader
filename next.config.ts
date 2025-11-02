@@ -3,8 +3,9 @@ import { themeColors } from "./src/config/theme";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'standalone',
+  output: 'export', // Generate static HTML files only
   images: {
+    unoptimized: true, // Required for static export
     // domains: ['img.youtube.com'], // Deprecated in Next.js 13+
     remotePatterns: [
       {
