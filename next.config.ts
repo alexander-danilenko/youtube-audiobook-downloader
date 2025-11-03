@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'export', // Generate static HTML files only
+  // To serve from a subdirectory (e.g., /my-app/), uncomment and set basePath:
+  // basePath: process.env.NEXT_PUBLIC_BASE_PATH || '/my-app',
   images: {
     unoptimized: true, // Required for static export
     // domains: ['img.youtube.com'], // Deprecated in Next.js 13+

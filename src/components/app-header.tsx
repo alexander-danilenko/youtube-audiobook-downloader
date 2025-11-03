@@ -3,19 +3,26 @@
 import { AppBar, Typography, Box, Container, Select, MenuItem, FormControl, IconButton } from '@mui/material';
 import { GitHub as GitHubIcon } from '@mui/icons-material';
 import { useTranslation } from '../i18n/use-translation';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, usePathname } from 'next/navigation';
 import { Language } from '../i18n/translations';
 import { ThemeSwitcher } from './theme-switcher';
+import { useBasePath } from '../hooks/use-base-path';
 
 export function AppHeader() {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
+  const pathname = usePathname();
+  const basePath = useBasePath();
   const currentLang = (params?.lang as Language) || 'en';
 
+  // Construct logo path with base path support
+  const logoPath = `${basePath}/icon.svg`;
+
   const handleLanguageChange = (newLang: Language): void => {
-    const currentPath = window.location.pathname;
-    const newPath = currentPath.replace(/^\/(en|ukr)/, `../${newLang}`);
+    // Use pathname from Next.js which already accounts for basePath
+    // Replace the language segment anywhere in the path
+    const newPath = pathname.replace(/\/(en|ukr)(\/|$)/, `/${newLang}$2`);
     router.push(newPath);
   };
 
@@ -26,7 +33,7 @@ export function AppHeader() {
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box
               component="img"
-              src="../icon.svg"
+              src={logoPath}
               alt="YouTube"
               sx={{
                 width: 64,
