@@ -1,6 +1,6 @@
 {
   "app_title": "YT Завантажувач Аудіокниг",
-  "app_subtitle": "Генерація shell-скриптів для завантаження аудіокниг з YouTube за допомогою yt-dlp",
+  "app_subtitle": "Генерація shell-скрипту для завантаження аудіокниг з YouTube за допомогою yt-dlp",
   "introduction_paragraph_1": "Завантаження аудіокниг з YouTube та додавання метаданих, таких як назва, автор, розділи та обкладинка, займає багато часу. Цей інструмент, що працює в браузері, підготовлює список посилань на відео YouTube та деталі книг, а потім генерує скрипт, який автоматично все обробляє.",
   "introduction_paragraph_2": "Для кожного посилання на відео ви вводите інформацію про книгу: назва, автор, диктор, серія та рік. Додаток генерує скрипт, який використовує {ytdlp} для {downloadAudio}. Потім {ffmpeg} вбудовує метадані, додає маркери розділів (якщо доступні) та інтегрує обкладинку в аудіофайли.",
   "introduction_ytdlp": "yt-dlp",
@@ -21,7 +21,7 @@
   "book_card_series_number": "№ серії",
   "book_card_year": "Рік",
   "book_card_required": "*",
-  "book_card_no_preview": "Немає попереднього перегляду",
+  "book_card_no_preview": "Нема прев'ю",
   "book_card_youtube_url_helper": "Приклад: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   "book_card_book_title_helper": "Приклад: Гаррі Поттер і філософський камінь",
   "book_card_author_helper": "Приклад: Дж. К. Роулінг",
@@ -62,4 +62,3 @@
   "text_transform_uppercase": "ВЕЛИКІ",
   "text_transform_lowercase": "маленькі"
 }
-
