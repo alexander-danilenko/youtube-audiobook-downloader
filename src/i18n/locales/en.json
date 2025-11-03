@@ -62,5 +62,15 @@
   "theme_switch_to_light": "Switch to light mode",
   "footer_copyright": "© {year} YouTube Audiobook Download Helper. All rights reserved.",
   "footer_link_github": "GitHub",
-  "footer_disclaimer": "This tool is provided as-is. Use at your own risk. Always respect copyright and YouTube's terms of service and your mom."
+  "footer_disclaimer": "This tool is provided as-is. Use at your own risk. Always respect copyright and YouTube's terms of service and your mom.",
+  "validation_id_required": "ID is required",
+  "validation_url_required": "URL is required",
+  "validation_url_invalid": "URL must be a valid YouTube URL",
+  "validation_title_required": "Title is required",
+  "validation_title_empty": "Title cannot be empty",
+  "validation_author_required": "Author is required",
+  "validation_author_empty": "Author cannot be empty",
+  "validation_series_number_min": "Series number must be at least 1",
+  "validation_year_min": "Year must be at least 1000",
+  "validation_year_max": "Year must be at most 9999"
 }

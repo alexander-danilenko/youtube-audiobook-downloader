@@ -62,5 +62,15 @@
   "theme_switch_to_light": "Перемкнути на світлий режим",
   "footer_copyright": "© {year} Помічник для завантаження аудіокниг з YouTube. Всі права захищені.",
   "footer_link_github": "GitHub",
-  "footer_disclaimer": "Цей інструмент надається як є. Використовуйте на свій ризик. Завжди поважайте авторські права, умови використання YouTube та свою маму."
+  "footer_disclaimer": "Цей інструмент надається як є. Використовуйте на свій ризик. Завжди поважайте авторські права, умови використання YouTube та свою маму.",
+  "validation_id_required": "ID обов'язкове",
+  "validation_url_required": "URL обов'язковий",
+  "validation_url_invalid": "URL повинен бути дійсною адресою YouTube",
+  "validation_title_required": "Назва обов'язкова",
+  "validation_title_empty": "Назва не може бути порожньою",
+  "validation_author_required": "Автор обов'язковий",
+  "validation_author_empty": "Автор не може бути порожнім",
+  "validation_series_number_min": "Номер серії повинен бути принаймні 1",
+  "validation_year_min": "Рік повинен бути принаймні 1000",
+  "validation_year_max": "Рік повинен бути не більше 9999"
 }

@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { TextTransformMenu } from './text-transform-menu';
 import { useAppStore } from '../application/stores/app-store';
 import { useTranslation, useTranslationString } from '../i18n/use-translation';
+import { TranslationKey } from '../i18n/translations';
 
 interface BookCardProps {
   book: BookDto;
@@ -60,7 +61,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
     return bookDtoSchema.safeParse(localBook);
   }, [localBook]);
 
-  // Field-level validation errors
+  // Field-level validation errors (translated)
   const fieldErrors = useMemo(() => {
     if (validationResult.success) {
       return {};
@@ -69,11 +70,16 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
     if (validationResult.error) {
       validationResult.error.issues.forEach((issue) => {
         const path = issue.path.join('.');
-        errors[path] = issue.message;
+        // Check if the message is a translation key (starts with 'validation_')
+        const message = issue.message;
+        const translatedMessage = message.startsWith('validation_') 
+          ? (t(message as TranslationKey) as string)
+          : message;
+        errors[path] = translatedMessage;
       });
     }
     return errors;
-  }, [validationResult]);
+  }, [validationResult, t]);
 
   // Derived validation state - computed reactively from local state for immediate feedback
   const isUrlValid = useMemo(() => {

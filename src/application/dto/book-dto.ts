@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 export const bookDtoSchema = z.object({
-  id: z.string().min(1, 'ID is required'),
+  id: z.string().min(1, 'validation_id_required'),
   url: z
     .string()
-    .min(1, 'URL is required')
+    .min(1, 'validation_url_required')
     .refine(
       (url) => {
         const trimmed = url.trim();
@@ -12,22 +12,22 @@ export const bookDtoSchema = z.object({
         const youtubePattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i;
         return youtubePattern.test(trimmed);
       },
-      { message: 'URL must be a valid YouTube URL' }
+      { message: 'validation_url_invalid' }
     ),
-  title: z.string().min(1, 'Title is required').refine((val) => val.trim().length > 0, {
-    message: 'Title cannot be empty',
+  title: z.string().min(1, 'validation_title_required').refine((val) => val.trim().length > 0, {
+    message: 'validation_title_empty',
   }),
-  author: z.string().min(1, 'Author is required').refine((val) => val.trim().length > 0, {
-    message: 'Author cannot be empty',
+  author: z.string().min(1, 'validation_author_required').refine((val) => val.trim().length > 0, {
+    message: 'validation_author_empty',
   }),
   narrator: z.string().optional(),
   series: z.string().optional(),
-  seriesNumber: z.number().int().min(1, 'Series number must be at least 1'),
+  seriesNumber: z.number().int().min(1, 'validation_series_number_min'),
   year: z
     .number()
     .int()
-    .min(1000, 'Year must be at least 1000')
-    .max(9999, 'Year must be at most 9999')
+    .min(1000, 'validation_year_min')
+    .max(9999, 'validation_year_max')
     .optional(),
 });
 
