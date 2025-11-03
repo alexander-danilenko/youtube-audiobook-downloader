@@ -369,6 +369,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           variant="outlined"
           size="small"
           disabled={isLoading}
+          helperText="Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           error={isUrlValid && (metadataFetchError || (!!thumbnailUrl && !isThumbnailLoaded))}
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -415,7 +416,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         fullWidth
         variant="outlined"
         size="small"
-          disabled={isLoading}
+        disabled={isLoading}
+        helperText="Example: Harry Potter and the Philosopher's Stone"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -438,7 +440,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         fullWidth
         variant="outlined"
         size="small"
-          disabled={isLoading}
+        disabled={isLoading}
+        helperText="Example: J.K. Rowling"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -457,7 +460,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         fullWidth
         variant="outlined"
         size="small"
-          disabled={isLoading}
+        disabled={isLoading}
+        helperText="Person who reads the audiobook (e.g., Jim Dale)"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -477,7 +481,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           fullWidth
           variant="outlined"
           size="small"
-            disabled={isLoading}
+          disabled={isLoading}
+          helperText="Name of the book series (e.g., Harry Potter)"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -499,6 +504,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           size="small"
           disabled={isLoading}
           inputProps={{ min: 1 }}
+          helperText="Book # in series"
         />
         <TextField
           label="Year"
