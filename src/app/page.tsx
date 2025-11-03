@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Typography, Box, Container, Paper, Stack, Alert, Link } from '@mui/material';
+import { Typography, Box, Container, Paper, Stack, Alert, Link, Button } from '@mui/material';
 import '../infrastructure/di/container';
 import { useAppStore } from '../application/stores/app-store';
 import { usePersistStore } from '../application/stores/storage-store';
@@ -22,6 +22,8 @@ export default function Home() {
   const setBooks = useAppStore((state) => state.setBooks);
   const setFilenameTemplate = useAppStore((state) => state.setFilenameTemplate);
   const setCookiesBrowser = useAppStore((state) => state.setCookiesBrowser);
+  const expandAllBooks = useAppStore((state) => state.expandAllBooks);
+  const collapseAllBooks = useAppStore((state) => state.collapseAllBooks);
 
   // Local UI state (not persisted)
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
@@ -65,9 +67,31 @@ export default function Home() {
 
             {/* Book Table Section */}
             <Paper elevation={0} sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
-              <Typography variant="h6" component="h2" sx={{ p: 3, pb: 2, fontWeight: 500 }}>
-                Books
-              </Typography>
+              <Box sx={{ p: 3, pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6" component="h2" sx={{ fontWeight: 500 }}>
+                  Books
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => collapseAllBooks(books.map(book => book.id))}
+                    disabled={books.length === 0}
+                  >
+                    Collapse All
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => expandAllBooks(books.map(book => book.id))}
+                    disabled={books.length === 0}
+                  >
+                    Expand All
+                  </Button>
+                </Box>
+              </Box>
               <BookList
                 books={books}
                 onBooksChange={setBooks}

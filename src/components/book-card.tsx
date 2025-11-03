@@ -1,14 +1,17 @@
 'use client';
 
-import { TextField, Box, Paper, Typography, IconButton, InputAdornment, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button, Radio, FormControlLabel } from '@mui/material';
+import { TextField, Box, Paper, Typography, IconButton, InputAdornment, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button, Radio, FormControlLabel, Collapse } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { BookDto } from '../application/dto/book-dto';
 import { useThumbnail } from '../hooks/use-thumbnail';
 import { useYouTubeMetadata } from '../hooks/use-youtube-metadata';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { TextTransformMenu } from './text-transform-menu';
+import { useAppStore } from '../application/stores/app-store';
 
 interface BookCardProps {
   book: BookDto;
@@ -39,6 +42,11 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
   const [comparisonDialogOpen, setComparisonDialogOpen] = useState(false);
   const [comparisons, setComparisons] = useState<MetadataComparison[]>([]);
   const [selectedValues, setSelectedValues] = useState<Record<string, 'current' | 'fetched'>>({});
+  
+  // Collapsed state from store - default to expanded (not in collapsed set)
+  const collapsedBookIds = useAppStore((state) => state.collapsedBookIds);
+  const toggleBookCollapsed = useAppStore((state) => state.toggleBookCollapsed);
+  const isCollapsed = collapsedBookIds.has(book.id);
 
   useEffect(() => {
     setLocalBook(book);
@@ -184,10 +192,14 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
     let parsedValue: string | number | undefined = value;
     if (key === 'seriesNumber') {
       parsedValue = parseInt(value as string, 10);
-      if (isNaN(parsedValue)) parsedValue = 1;
+      if (isNaN(parsedValue) || parsedValue < 1) parsedValue = 1;
     } else if (key === 'year') {
       parsedValue = parseInt(value as string, 10);
-      if (isNaN(parsedValue)) parsedValue = undefined;
+      if (isNaN(parsedValue)) {
+        parsedValue = undefined;
+      } else if (parsedValue < 1) {
+        parsedValue = undefined;
+      }
     }
     
     const updatedBook = { ...localBook, [key]: parsedValue };
@@ -236,6 +248,34 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
   // URL is fully valid when: format is valid, thumbnail URL exists and is loaded, no metadata errors, and not currently loading
   const isUrlFullyValid = isUrlValid && !!thumbnailUrl && isThumbnailLoaded && !metadataFetchError && !isLoading;
 
+  // Check if book is empty with default values
+  const isEmpty = (book: BookDto): boolean => {
+    return (
+      !book.url.trim() &&
+      !book.title.trim() &&
+      !book.author.trim() &&
+      (!book.series || !book.series.trim()) &&
+      book.seriesNumber === 1 &&
+      !book.year
+    );
+  };
+
+  // Format collapsed heading: Author - Title
+  const formatCollapsedHeading = (book: BookDto): string => {
+    const author = book.author.trim();
+    const title = book.title.trim();
+    
+    if (author && title) {
+      return `${author} - ${title}`;
+    } else if (author) {
+      return author;
+    } else if (title) {
+      return title;
+    }
+    
+    return 'New Book';
+  };
+
   return (
     <>
       <Paper 
@@ -245,12 +285,60 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           mb: 2, 
           display: 'flex', 
           flexDirection: 'column', 
-          gap: 2,
+          gap: isCollapsed ? 0 : 2,
           opacity: isLoading ? 0.6 : 1,
           pointerEvents: isLoading ? 'none' : 'auto',
           transition: 'opacity 0.2s ease-in-out',
         }}
       >
+      {/* Collapsed Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          cursor: 'pointer',
+          userSelect: 'none',
+          '&:hover': {
+            bgcolor: 'action.hover',
+          },
+          p: 1,
+          borderRadius: 1,
+          mb: isCollapsed ? 0 : 1,
+          m: isCollapsed ? 0 : undefined,
+        }}
+        onClick={() => toggleBookCollapsed(book.id)}
+      >
+        <IconButton size="small" sx={{ flexShrink: 0 }}>
+          {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </IconButton>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            flex: 1,
+            fontWeight: 500,
+            color: 'text.primary',
+          }}
+        >
+          {isEmpty(localBook) ? 'Add Audiobook Youtube URL' : formatCollapsedHeading(localBook) || 'New Book'}
+        </Typography>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          color="error"
+          aria-label="remove book"
+          sx={{ flexShrink: 0 }}
+          disabled={isLoading}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Box>
+
+      {/* Collapsible Content */}
+      <Collapse in={!isCollapsed}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {thumbnailUrl ? (
           <IconButton onClick={handleThumbnailClick} sx={{ width: 80, height: 60, p: 0, flexShrink: 0 }}>
@@ -270,7 +358,11 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           </Box>
         )}
         <TextField
-          label="YouTube URL"
+          label={
+            <>
+              YouTube URL <Typography component="span" sx={{ color: 'error.main' }}>*</Typography>
+            </>
+          }
           value={localBook.url}
           onChange={(e) => handleChange('url', e.target.value)}
           fullWidth
@@ -311,12 +403,13 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
             ),
           }}
         />
-          <IconButton onClick={onRemove} color="error" aria-label="remove book" sx={{ flexShrink: 0 }} disabled={isLoading}>
-          <DeleteIcon />
-        </IconButton>
       </Box>
       <TextField
-        label="Book Title"
+        label={
+          <>
+            Book Title <Typography component="span" sx={{ color: 'error.main' }}>*</Typography>
+          </>
+        }
         value={localBook.title}
         onChange={(e) => handleChange('title', e.target.value)}
         fullWidth
@@ -335,7 +428,11 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         }}
       />
       <TextField
-        label="Author"
+        label={
+          <>
+            Author <Typography component="span" sx={{ color: 'error.main' }}>*</Typography>
+          </>
+        }
         value={localBook.author}
         onChange={(e) => handleChange('author', e.target.value)}
         fullWidth
@@ -400,7 +497,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           sx={{ width: 120, flexShrink: 0 }}
           variant="outlined"
           size="small"
-            disabled={isLoading}
+          disabled={isLoading}
+          inputProps={{ min: 1 }}
         />
         <TextField
           label="Year"
@@ -410,9 +508,12 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           sx={{ width: 100, flexShrink: 0 }}
           variant="outlined"
           size="small"
-            disabled={isLoading}
+          disabled={isLoading}
+          inputProps={{ min: 1 }}
         />
       </Box>
+        </Box>
+      </Collapse>
     </Paper>
 
       {/* Metadata Comparison Dialog */}

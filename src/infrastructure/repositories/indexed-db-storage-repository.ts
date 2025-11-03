@@ -9,6 +9,7 @@ interface AppStateDb extends DBSchema {
       filenameTemplate: string;
       cookiesBrowser: CookiesBrowser;
       columnWidths: Record<string, number>;
+      collapsedBookIds?: string[];
     };
   };
 }
@@ -45,6 +46,7 @@ export class IndexedDbStorageRepository {
     filenameTemplate: string;
     cookiesBrowser: CookiesBrowser;
     columnWidths: Record<string, number>;
+    collapsedBookIds?: string[];
   }): Promise<void> {
     if (!this.db) {
       await this.initialize();
@@ -67,6 +69,7 @@ export class IndexedDbStorageRepository {
     filenameTemplate: string;
     cookiesBrowser?: CookiesBrowser;
     columnWidths: Record<string, number>;
+    collapsedBookIds?: string[];
   } | null> {
     if (!this.db) {
       await this.initialize();

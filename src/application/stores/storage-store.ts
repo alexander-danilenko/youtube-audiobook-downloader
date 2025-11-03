@@ -13,6 +13,7 @@ export function usePersistStore(): boolean {
   const filenameTemplate = useAppStore((state) => state.filenameTemplate);
   const cookiesBrowser = useAppStore((state) => state.cookiesBrowser);
   const columnWidths = useAppStore((state) => state.columnWidths);
+  const collapsedBookIds = useAppStore((state) => state.collapsedBookIds);
 
   // Initialize and load from IndexedDB on mount
   useEffect(() => {
@@ -31,6 +32,7 @@ export function usePersistStore(): boolean {
             filenameTemplate: savedState.filenameTemplate,
             cookiesBrowser: savedState.cookiesBrowser || 'none',
             columnWidths: savedState.columnWidths,
+            collapsedBookIds: savedState.collapsedBookIds ? new Set(savedState.collapsedBookIds) : new Set<string>(),
           });
         }
       } catch (error) {
@@ -61,6 +63,7 @@ export function usePersistStore(): boolean {
           filenameTemplate,
           cookiesBrowser,
           columnWidths,
+          collapsedBookIds: Array.from(collapsedBookIds),
         });
       } catch (error) {
         console.error('Failed to save state to IndexedDB:', error);
@@ -75,7 +78,7 @@ export function usePersistStore(): boolean {
         saveTimeoutRef.current = null;
       }
     };
-  }, [books, filenameTemplate, cookiesBrowser, columnWidths]);
+  }, [books, filenameTemplate, cookiesBrowser, columnWidths, collapsedBookIds]);
 
   return isHydrated;
 }

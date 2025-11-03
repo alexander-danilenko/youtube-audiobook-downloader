@@ -6,6 +6,7 @@ import { BookDto } from '../application/dto/book-dto';
 import { CsvImportExport } from './csv-import-export';
 import { BookCard } from './book-card';
 import { useRef } from 'react';
+import { useAppStore } from '../application/stores/app-store';
 
 
 interface BookListProps {
@@ -17,12 +18,15 @@ interface BookListProps {
 export function BookList({ books, onBooksChange, onThumbnailClick }: BookListProps) {
   // Track book IDs that were imported via CSV to skip metadata fetching
   const importedBookIdsRef = useRef<Set<string>>(new Set());
+  const expandAllBooks = useAppStore((state) => state.expandAllBooks);
   
   const handleImportedBooks = (importedBooks: BookDto[]): void => {
     // Mark all imported books
     importedBooks.forEach(book => {
       importedBookIdsRef.current.add(book.id);
     });
+    // Expand all imported books
+    expandAllBooks(importedBooks.map(book => book.id));
     // Clear the set after a delay to allow initial render
     // The imported flag only applies to the initial render, not future updates
     setTimeout(() => {
@@ -47,6 +51,8 @@ export function BookList({ books, onBooksChange, onThumbnailClick }: BookListPro
     onBooksChange(books.map((book) => (book.id === updatedBook.id ? updatedBook : book)));
   };
 
+  const cleanupCollapsedState = useAppStore((state) => state.cleanupCollapsedState);
+
   const handleBookRemove = (bookId: string): void => {
     // If this is the last book, replace it with a new empty book instead of removing it
     if (books.length === 1) {
@@ -61,8 +67,13 @@ export function BookList({ books, onBooksChange, onThumbnailClick }: BookListPro
         year: undefined,
       };
       onBooksChange([newBook]);
+      // Clean up collapsed state for removed books
+      cleanupCollapsedState([newBook.id]);
     } else {
-      onBooksChange(books.filter((book) => book.id !== bookId));
+      const updatedBooks = books.filter((book) => book.id !== bookId);
+      onBooksChange(updatedBooks);
+      // Clean up collapsed state for removed books
+      cleanupCollapsedState(updatedBooks.map(book => book.id));
     }
   };
 
