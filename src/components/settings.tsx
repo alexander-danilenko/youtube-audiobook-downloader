@@ -3,6 +3,7 @@
 import { Box, Typography, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Stack } from '@mui/material';
 import { FilenameTemplateInput } from './filename-template-input';
 import { CookiesBrowser } from '../application/stores/app-store';
+import { useTranslation } from '../i18n/use-translation';
 
 interface SettingsProps {
   filenameTemplate: string;
@@ -14,6 +15,7 @@ interface SettingsProps {
 const BROWSER_OPTIONS: CookiesBrowser[] = ['none', 'brave', 'chrome', 'chromium', 'edge', 'firefox', 'opera', 'safari', 'vivaldi', 'whale'];
 
 export function Settings({ filenameTemplate, cookiesBrowser, onFilenameTemplateChange, onCookiesBrowserChange }: SettingsProps) {
+  const { t } = useTranslation();
   const handleCookiesBrowserChange = (event: SelectChangeEvent<CookiesBrowser>): void => {
     onCookiesBrowserChange(event.target.value as CookiesBrowser);
   };
@@ -21,29 +23,29 @@ export function Settings({ filenameTemplate, cookiesBrowser, onFilenameTemplateC
   return (
     <Box component="fieldset" sx={{ mb: 3, border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
       <Typography component="legend" variant="body2" sx={{ px: 1 }}>
-        Settings
+        {t('settings_title')}
       </Typography>
       <Stack spacing={2} sx={{ mt: 2 }}>
         <FilenameTemplateInput value={filenameTemplate} onChange={onFilenameTemplateChange} />
         
         <FormControl fullWidth size="small">
-          <InputLabel id="cookies-browser-label">Cookies from Browser</InputLabel>
+          <InputLabel id="cookies-browser-label">{t('settings_cookies_browser')}</InputLabel>
           <Select
             labelId="cookies-browser-label"
             id="cookies-browser"
             value={cookiesBrowser}
-            label="Cookies from Browser"
+            label={t('settings_cookies_browser')}
             onChange={handleCookiesBrowserChange}
           >
             {BROWSER_OPTIONS.map((browser) => (
               <MenuItem key={browser} value={browser}>
-                {browser === 'none' ? 'None' : browser.charAt(0).toUpperCase() + browser.slice(1)}
+                {browser === 'none' ? t('settings_browser_none') : browser.charAt(0).toUpperCase() + browser.slice(1)}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
-          Attach cookies from your browser to bypass 403 errors and access non-public videos.
+          {t('settings_cookies_browser_helper')}
         </Typography>
       </Stack>
     </Box>

@@ -12,6 +12,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { TextTransformMenu } from './text-transform-menu';
 import { useAppStore } from '../application/stores/app-store';
+import { useTranslation, useTranslationString } from '../i18n/use-translation';
 
 interface BookCardProps {
   book: BookDto;
@@ -28,6 +29,8 @@ interface MetadataComparison {
 }
 
 export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipAutoMetadataFetch = false }: BookCardProps) {
+  const { t } = useTranslation();
+  const tString = useTranslationString();
   const [localBook, setLocalBook] = useState<BookDto>(book);
   const { thumbnailUrl, fullSizeThumbnailUrl } = useThumbnail(book.url);
   const { isLoading, fetchMetadata, error: metadataError } = useYouTubeMetadata();
@@ -273,7 +276,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
       return title;
     }
     
-    return 'New Book';
+    return tString('books_new_book');
   };
 
   return (
@@ -320,7 +323,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
             color: 'text.primary',
           }}
         >
-          {isEmpty(localBook) ? 'Add Audiobook Youtube URL' : formatCollapsedHeading(localBook) || 'New Book'}
+          {isEmpty(localBook) ? t('books_add_new_book_placeholder') : formatCollapsedHeading(localBook) || t('books_new_book')}
         </Typography>
         <IconButton
           onClick={(e) => {
@@ -328,7 +331,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
             onRemove();
           }}
           color="error"
-          aria-label="remove book"
+          aria-label={tString('book_card_remove_book')}
           sx={{ flexShrink: 0 }}
           disabled={isLoading}
         >
@@ -354,13 +357,13 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           </IconButton>
         ) : (
           <Box sx={{ width: 80, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'action.disabledBackground', borderRadius: 1, flexShrink: 0 }}>
-            <Typography variant="caption" color="text.secondary">No preview</Typography>
+            <Typography variant="caption" color="text.secondary">{t('book_card_no_preview')}</Typography>
           </Box>
         )}
         <TextField
           label={
             <>
-              YouTube URL <Typography component="span" sx={{ color: 'error.main' }}>*</Typography>
+              {t('book_card_youtube_url')} <Typography component="span" sx={{ color: 'error.main' }}>{t('book_card_required')}</Typography>
             </>
           }
           value={localBook.url}
@@ -369,7 +372,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           variant="outlined"
           size="small"
           disabled={isLoading}
-          helperText="Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          helperText={t('book_card_youtube_url_helper')}
           error={isUrlValid && (metadataFetchError || (!!thumbnailUrl && !isThumbnailLoaded))}
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -395,7 +398,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                     size="small"
                     onClick={() => attemptFetchMetadata(localBook.url.trim())}
                     disabled={!localBook.url.trim() || isLoading}
-                    title="Refresh metadata from YouTube"
+                    title={tString('book_card_refresh_metadata')}
                   >
                     <AutorenewIcon fontSize="small" />
                   </IconButton>
@@ -408,7 +411,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
       <TextField
         label={
           <>
-            Book Title <Typography component="span" sx={{ color: 'error.main' }}>*</Typography>
+            {t('book_card_book_title')} <Typography component="span" sx={{ color: 'error.main' }}>{t('book_card_required')}</Typography>
           </>
         }
         value={localBook.title}
@@ -417,7 +420,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         variant="outlined"
         size="small"
         disabled={isLoading}
-        helperText="Example: Harry Potter and the Philosopher's Stone"
+        helperText={t('book_card_book_title_helper')}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -432,7 +435,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
       <TextField
         label={
           <>
-            Author <Typography component="span" sx={{ color: 'error.main' }}>*</Typography>
+            {t('book_card_author')} <Typography component="span" sx={{ color: 'error.main' }}>{t('book_card_required')}</Typography>
           </>
         }
         value={localBook.author}
@@ -441,7 +444,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         variant="outlined"
         size="small"
         disabled={isLoading}
-        helperText="Example: J.K. Rowling"
+        helperText={t('book_card_author_helper')}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -454,14 +457,14 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         }}
       />
       <TextField
-        label="Narrator"
+        label={t('book_card_narrator')}
         value={localBook.narrator}
         onChange={(e) => handleChange('narrator', e.target.value)}
         fullWidth
         variant="outlined"
         size="small"
         disabled={isLoading}
-        helperText="Person who reads the audiobook (e.g., Jim Dale)"
+        helperText={t('book_card_narrator_helper')}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -475,14 +478,14 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
       />
       <Box sx={{ display: 'flex', gap: 2 }}>
         <TextField
-          label="Series Name"
+          label={t('book_card_series_name')}
           value={localBook.series}
           onChange={(e) => handleChange('series', e.target.value)}
           fullWidth
           variant="outlined"
           size="small"
           disabled={isLoading}
-          helperText="Name of the book series (e.g., Harry Potter)"
+          helperText={t('book_card_series_helper')}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -495,7 +498,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           }}
         />
         <TextField
-          label="Series #"
+          label={t('book_card_series_number')}
           type="number"
           value={localBook.seriesNumber}
           onChange={(e) => handleChange('seriesNumber', e.target.value)}
@@ -504,10 +507,10 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           size="small"
           disabled={isLoading}
           inputProps={{ min: 1 }}
-          helperText="Book # in series"
+          helperText={t('book_card_series_number_helper')}
         />
         <TextField
-          label="Year"
+          label={t('book_card_year')}
           type="number"
           value={localBook.year}
           onChange={(e) => handleChange('year', e.target.value)}
@@ -524,16 +527,16 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
 
       {/* Metadata Comparison Dialog */}
       <Dialog open={comparisonDialogOpen} onClose={() => setComparisonDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Conflicting Metadata</DialogTitle>
+        <DialogTitle>{t('metadata_dialog_title')}</DialogTitle>
         <DialogContent sx={{ pt: 3 }}>
           <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
-            The fetched metadata differs from your current data. Please select which values to keep:
+            {t('metadata_dialog_description')}
           </Typography>
           
           {comparisons.map((comparison) => (
             <Box key={comparison.fieldName} sx={{ mb: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, textTransform: 'capitalize' }}>
-                {comparison.fieldName}
+                {comparison.fieldName === 'title' ? t('book_card_book_title') : t('book_card_author')}
               </Typography>
               
               <Box sx={{ display: 'flex', gap: 2 }}>
@@ -547,7 +550,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                   }
                   label={
                     <Box>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>Current</Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>{t('metadata_dialog_current')}</Typography>
                       <Typography variant="body2">{comparison.current}</Typography>
                     </Box>
                   }
@@ -564,7 +567,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                   }
                   label={
                     <Box>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>From YouTube</Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>{t('metadata_dialog_from_youtube')}</Typography>
                       <Typography variant="body2">{comparison.fetched}</Typography>
                     </Box>
                   }
@@ -575,8 +578,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setComparisonDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleApplyComparison} variant="contained">Apply</Button>
+          <Button onClick={() => setComparisonDialogOpen(false)}>{t('metadata_dialog_cancel')}</Button>
+          <Button onClick={handleApplyComparison} variant="contained">{t('metadata_dialog_apply')}</Button>
         </DialogActions>
       </Dialog>
     </>

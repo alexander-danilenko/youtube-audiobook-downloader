@@ -6,6 +6,7 @@ import { ContentCopy as ContentCopyIcon } from '@mui/icons-material';
 import { BookDto } from '../application/dto/book-dto';
 import { CookiesBrowser } from '../application/stores/app-store';
 import { useScriptGenerator } from '../hooks/use-script-generator';
+import { useTranslation } from '../i18n/use-translation';
 
 interface GetDownloadCommandButtonProps {
   books: BookDto[];
@@ -14,6 +15,7 @@ interface GetDownloadCommandButtonProps {
 }
 
 export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrowser }: GetDownloadCommandButtonProps) {
+  const { t } = useTranslation();
   const { copyDownloadString } = useScriptGenerator();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -23,7 +25,7 @@ export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrows
     );
 
     if (validBooks.length === 0) {
-      alert('Please add at least one book with URL, title, author, and narrator.');
+      alert(t('script_generation_error_no_books') as string);
       return;
     }
 
@@ -31,7 +33,7 @@ export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrows
       await copyDownloadString(validBooks, filenameTemplate, cookiesBrowser);
       setSnackbarOpen(true);
     } catch (error) {
-      alert('Failed to copy to clipboard. Please try again.');
+      alert(t('script_generation_error_copy_failed') as string);
     }
   };
 
@@ -45,7 +47,7 @@ export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrows
           size="large"
           startIcon={<ContentCopyIcon />}
         >
-          Get Download Command
+          {t('script_generation_get_download_command')}
         </Button>
       </Box>
       <Snackbar
@@ -55,7 +57,7 @@ export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrows
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
-          Download command copied to clipboard!
+          {t('script_generation_copy_success')}
         </Alert>
       </Snackbar>
     </>

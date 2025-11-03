@@ -7,6 +7,7 @@ import { CsvImportExport } from './csv-import-export';
 import { BookCard } from './book-card';
 import { useRef } from 'react';
 import { useAppStore } from '../application/stores/app-store';
+import { useTranslation } from '../i18n/use-translation';
 
 
 interface BookListProps {
@@ -16,6 +17,7 @@ interface BookListProps {
 }
 
 export function BookList({ books, onBooksChange, onThumbnailClick }: BookListProps) {
+  const { t } = useTranslation();
   // Track book IDs that were imported via CSV to skip metadata fetching
   const importedBookIdsRef = useRef<Set<string>>(new Set());
   const expandAllBooks = useAppStore((state) => state.expandAllBooks);
@@ -99,7 +101,7 @@ export function BookList({ books, onBooksChange, onThumbnailClick }: BookListPro
           startIcon={<AddIcon />}
           onClick={handleAddRow}
         >
-          Add New Book
+          {t('books_add_new_book')}
         </Button>
       </Box>
     </Box>

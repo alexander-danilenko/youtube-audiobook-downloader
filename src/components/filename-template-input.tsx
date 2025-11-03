@@ -3,6 +3,7 @@
 import { TextField, FormHelperText, Box, Button, Typography, InputAdornment } from '@mui/material';
 import { DEFAULT_FILENAME_TEMPLATE } from '../application/stores/app-store';
 import { TextTransformMenu } from './text-transform-menu';
+import { useTranslation } from '../i18n/use-translation';
 
 interface FilenameTemplateInputProps {
   value: string;
@@ -10,6 +11,7 @@ interface FilenameTemplateInputProps {
 }
 
 export function FilenameTemplateInput({ value, onChange }: FilenameTemplateInputProps) {
+  const { t } = useTranslation();
   const handleReset = (): void => {
     onChange(DEFAULT_FILENAME_TEMPLATE);
   };
@@ -17,7 +19,7 @@ export function FilenameTemplateInput({ value, onChange }: FilenameTemplateInput
   return (
     <Box>
       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-        Filename Template
+        {t('settings_filename_template')}
       </Typography>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <TextField
@@ -45,11 +47,11 @@ export function FilenameTemplateInput({ value, onChange }: FilenameTemplateInput
           size="small"
           sx={{ flexShrink: 0, height: '40px' }}
         >
-          Reset
+          {t('settings_reset')}
         </Button>
       </Box>
       <FormHelperText sx={{ mt: 1, mx: 0 }}>
-        Variables: $author, $title, $narrator, $series, $series_num, $year | yt-dlp placeholders: %(ext)s, %(title)s, etc.
+        {t('settings_filename_template_helper')}
       </FormHelperText>
     </Box>
   );

@@ -52,6 +52,21 @@
 ## SECURITY
 - No hardcoded secrets/keys; validate all user inputs; sanitize YouTube URLs before processing
 
+## INTERNATIONALIZATION (i18n)
+- **MANDATORY**: All user-facing strings in JSX components MUST use translation keys via `t()` function
+- **NO HARDCODED STRINGS**: Never add plain text strings directly in JSX - always use translation keys
+- **Translation Key Format**: Use strict snake_case (e.g., `app_title`, `book_card_youtube_url`) - no nested objects
+- **Key Naming**: Translation keys must follow semantic grouping with underscores (e.g., `book_card_*`, `settings_*`, `csv_*`)
+- **Type Safety**: Translation function `t()` is fully typed - use autocomplete to ensure correct key usage
+- **Schema Validation**: All translation keys must be defined in `src/i18n/translations.schema.json`
+- **Adding New Translations**: 
+  1. Add key to English translation file (`src/i18n/locales/en.json`)
+  2. Add same key to all other language files (e.g., `ukr.json`)
+  3. Update JSON schema (`src/i18n/translations.schema.json`)
+  4. Use `t('your_new_key')` in components
+- **URL Routing**: Languages are accessed via `/en` and `/ukr` URLs - middleware handles detection and redirects
+- **Language Store**: Use `useLanguageStore` for language state management (synced with URL and localStorage)
+
 ## GIT
 Conventional Commits: `<type>(<scope>): <subject>`
 

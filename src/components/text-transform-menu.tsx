@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Menu, MenuItem, IconButton } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
+import { useTranslation, useTranslationString } from '../i18n/use-translation';
 
 interface TextTransformMenuProps {
   onTransform: (transformedText: string) => void;
@@ -11,6 +12,8 @@ export const TextTransformMenu: React.FC<TextTransformMenuProps> = ({
   onTransform,
   currentText,
 }) => {
+  const { t } = useTranslation();
+  const tString = useTranslationString();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -54,7 +57,7 @@ export const TextTransformMenu: React.FC<TextTransformMenuProps> = ({
   return (
     <>
       <IconButton
-        aria-label="text-transform-menu"
+        aria-label={tString('text_transform_menu_label')}
         aria-controls={open ? 'text-transform-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
@@ -72,10 +75,10 @@ export const TextTransformMenu: React.FC<TextTransformMenuProps> = ({
           'aria-labelledby': 'text-transform-menu',
         }}
       >
-        <MenuItem onClick={() => applyTransform(toSentenceCase)}>Sentence case</MenuItem>
-        <MenuItem onClick={() => applyTransform(toNameCase)}>Name Case</MenuItem>
-        <MenuItem onClick={() => applyTransform(toUpperCase)}>UPPERCASE</MenuItem>
-        <MenuItem onClick={() => applyTransform(toLowerCase)}>lowercase</MenuItem>
+        <MenuItem onClick={() => applyTransform(toSentenceCase)}>{t('text_transform_sentence_case')}</MenuItem>
+        <MenuItem onClick={() => applyTransform(toNameCase)}>{t('text_transform_name_case')}</MenuItem>
+        <MenuItem onClick={() => applyTransform(toUpperCase)}>{t('text_transform_uppercase')}</MenuItem>
+        <MenuItem onClick={() => applyTransform(toLowerCase)}>{t('text_transform_lowercase')}</MenuItem>
       </Menu>
     </>
   );

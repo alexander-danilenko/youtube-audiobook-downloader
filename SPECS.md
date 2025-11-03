@@ -189,3 +189,16 @@ This document defines the functional requirements for the YT Audiobook Downloade
 - Debounce metadata fetching to wait 500ms after the user stops typing before making the API request
 - Handle fetch errors gracefully without disrupting the user experience
 
+### REQ0040: Internationalization (i18n) Support
+- Support multiple languages via URL-based routing (e.g., `/en` for English, `/ukr` for Ukrainian)
+- Automatically detect user's preferred language from browser settings on first visit
+- Redirect users from root URL (`/`) to appropriate language URL (`/en` or `/ukr`) based on detection
+- Store translation keys in flat JSON structure using strict snake_case naming (e.g., `app_title`, `book_card_youtube_url`)
+- All translation keys must be defined in a JSON schema file (`translations.schema.json`) for validation
+- Provide TypeScript-typed translation function `t()` with autocomplete support based on English translation structure
+- Language switcher in header must update URL and persist selection in localStorage
+- All user-facing strings in JSX must use translation keys via `t()` function - no hardcoded strings allowed
+- Translation files must be located in `src/i18n/locales/` directory (e.g., `en.json`, `ukr.json`)
+- Translation system must support placeholder replacement for dynamic content (e.g., `{variable}` syntax)
+- Language state must be synchronized between URL, localStorage, and application state
+

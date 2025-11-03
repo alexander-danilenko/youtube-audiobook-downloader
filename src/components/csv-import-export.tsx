@@ -5,6 +5,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, Checkbo
 import UploadIcon from '@mui/icons-material/Upload';
 import DownloadIcon from '@mui/icons-material/Download';
 import { BookDto } from '../application/dto/book-dto';
+import { useTranslation } from '../i18n/use-translation';
 
 interface CsvImportExportProps {
   books: BookDto[];
@@ -12,17 +13,18 @@ interface CsvImportExportProps {
   onImport?: (importedBooks: BookDto[]) => void;
 }
 
-const CSV_COLUMNS = [
-  { key: 'url', label: 'YouTube URL' },
-  { key: 'title', label: 'Book Title' },
-  { key: 'author', label: 'Author' },
-  { key: 'narrator', label: 'Narrator' },
-  { key: 'series', label: 'Series Name' },
-  { key: 'seriesNumber', label: 'Series #' },
-  { key: 'year', label: 'Year' },
-];
-
 export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExportProps) {
+  const { t } = useTranslation();
+  
+  const CSV_COLUMNS = [
+    { key: 'url', label: t('book_card_youtube_url') },
+    { key: 'title', label: t('book_card_book_title') },
+    { key: 'author', label: t('book_card_author') },
+    { key: 'narrator', label: t('book_card_narrator') },
+    { key: 'series', label: t('book_card_series_name') },
+    { key: 'seriesNumber', label: t('book_card_series_number') },
+    { key: 'year', label: t('book_card_year') },
+  ];
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [hasHeaders, setHasHeaders] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,7 +97,7 @@ export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExp
           fileInputRef.current.value = '';
         }
       } catch (error) {
-        alert('Error importing CSV: ' + (error instanceof Error ? error.message : 'Unknown error'));
+        alert(t('csv_error_import', { error: error instanceof Error ? error.message : 'Unknown error' }) as string);
       }
     };
     reader.readAsText(file);
@@ -177,14 +179,14 @@ export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExp
         onClick={exportToCsv}
         disabled={books.length === 0}
       >
-        Export CSV
+        {t('csv_export')}
       </Button>
       <Button
         variant="outlined"
         startIcon={<UploadIcon />}
         onClick={() => setImportDialogOpen(true)}
       >
-        Import CSV
+        {t('csv_import')}
       </Button>
       
       <input
@@ -196,11 +198,10 @@ export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExp
       />
 
       <Dialog open={importDialogOpen} onClose={() => setImportDialogOpen(false)}>
-        <DialogTitle>Import CSV File</DialogTitle>
+        <DialogTitle>{t('csv_dialog_title')}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" sx={{ mb: 2 }}>
-            Select a CSV file to import. Make sure the columns match the expected format:
-            YouTube URL, Book Title, Author, Narrator, Series Name, Series #, Year
+            {t('csv_dialog_description')}
           </Typography>
           <FormControlLabel
             control={
@@ -209,18 +210,18 @@ export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExp
                 onChange={(e) => setHasHeaders(e.target.checked)}
               />
             }
-            label="CSV file contains header row"
+            label={t('csv_has_headers')}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setImportDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => setImportDialogOpen(false)}>{t('metadata_dialog_cancel')}</Button>
           <Button
             onClick={() => {
               fileInputRef.current?.click();
             }}
             variant="contained"
           >
-            Select File
+            {t('csv_select_file')}
           </Button>
         </DialogActions>
       </Dialog>
