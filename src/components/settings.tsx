@@ -30,11 +30,11 @@ export function Settings({ filenameTemplate, cookiesBrowser, maxAudioBitrate, on
   };
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="h6" component="h2" sx={{ fontWeight: 500 }}>
+    <Stack spacing={{ xs: 2, sm: 3 }}>
+      <Typography variant="h6" component="h2" sx={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
         {t('settings_title')}
       </Typography>
-      <Stack spacing={2}>
+      <Stack spacing={{ xs: 2, sm: 2 }}>
         <FilenameTemplateInput value={filenameTemplate} onChange={onFilenameTemplateChange} />
         
         <FormControl fullWidth size="small">

@@ -101,6 +101,9 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
               flex: 1,
               fontWeight: 500,
               color: 'text.primary',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
             {isEmpty ? t('books_add_new_book_placeholder') : formatCollapsedHeading || t('books_new_book')}
@@ -122,15 +125,33 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
         {/* Collapsible Content */}
         <Collapse in={!isCollapsed}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'stretch', sm: 'center' },
+                gap: 2,
+              }}
+            >
               {thumbnailUrl ? (
-                <IconButton onClick={handleThumbnailClick} sx={{ width: 80, height: 60, p: 0, flexShrink: 0 }}>
+                <IconButton
+                  onClick={handleThumbnailClick}
+                  sx={{
+                    width: { xs: '100%', sm: 80 },
+                    height: { xs: 'auto', sm: 60 },
+                    aspectRatio: { xs: '16/9', sm: 'auto' },
+                    p: 0,
+                    flexShrink: 0,
+                    alignSelf: { xs: 'center', sm: 'flex-start' },
+                    maxWidth: { xs: 200, sm: 80 },
+                  }}
+                >
                   <Image
                     src={thumbnailUrl}
                     alt=""
                     width={80}
                     height={60}
-                    style={{ objectFit: 'cover', borderRadius: 4 }}
+                    style={{ objectFit: 'cover', borderRadius: 4, width: '100%', height: '100%' }}
                     onLoad={handleThumbnailLoad}
                     onError={handleThumbnailError}
                   />
@@ -138,14 +159,17 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
               ) : (
                 <Box
                   sx={{
-                    width: 80,
-                    height: 60,
+                    width: { xs: '100%', sm: 80 },
+                    height: { xs: 'auto', sm: 60 },
+                    aspectRatio: { xs: '16/9', sm: 'auto' },
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     bgcolor: 'action.disabledBackground',
                     borderRadius: 1,
                     flexShrink: 0,
+                    alignSelf: { xs: 'center', sm: 'flex-start' },
+                    maxWidth: { xs: 200, sm: 80 },
                   }}
                 >
                   <Typography variant="caption" color="text.secondary">
@@ -292,7 +316,13 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                 ),
               }}
             />
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 2,
+              }}
+            >
               <TextField
                 label={t('book_card_series_name')}
                 value={localBook.series}
@@ -315,7 +345,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                 type="number"
                 value={localBook.seriesNumber}
                 onChange={(e) => handleChange('seriesNumber', e.target.value)}
-                sx={{ width: 120, flexShrink: 0 }}
+                sx={{ width: { xs: '100%', sm: 120 }, flexShrink: 0 }}
                 variant="outlined"
                 size="small"
                 disabled={isLoading}
@@ -328,7 +358,7 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
                 type="number"
                 value={localBook.year}
                 onChange={(e) => handleChange('year', e.target.value)}
-                sx={{ width: 100, flexShrink: 0 }}
+                sx={{ width: { xs: '100%', sm: 100 }, flexShrink: 0 }}
                 variant="outlined"
                 size="small"
                 disabled={isLoading}

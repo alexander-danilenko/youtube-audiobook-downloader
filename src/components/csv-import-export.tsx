@@ -44,11 +44,30 @@ export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExp
   });
 
   return (
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-      <Button variant="outlined" startIcon={<DownloadIcon />} onClick={exportToCsv} disabled={books.length === 0}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        gap: 1,
+        alignItems: 'stretch',
+        width: { xs: '100%', sm: 'auto' },
+      }}
+    >
+      <Button
+        variant="outlined"
+        startIcon={<DownloadIcon />}
+        onClick={exportToCsv}
+        disabled={books.length === 0}
+        sx={{ width: { xs: '100%', sm: 'auto' } }}
+      >
         {t('csv_export')}
       </Button>
-      <Button variant="outlined" startIcon={<UploadIcon />} onClick={openImportDialog}>
+      <Button
+        variant="outlined"
+        startIcon={<UploadIcon />}
+        onClick={openImportDialog}
+        sx={{ width: { xs: '100%', sm: 'auto' } }}
+      >
         {t('csv_import')}
       </Button>
 

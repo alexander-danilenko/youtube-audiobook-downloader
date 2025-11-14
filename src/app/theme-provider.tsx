@@ -43,25 +43,24 @@ const createAppTheme = (mode: 'light' | 'dark') => {
     typography: {
       fontFamily: '"Roboto", "Arial", sans-serif', // YouTube's font
     },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 900,
+        lg: 1200,
+        xl: 1536,
+      },
+    },
+    spacing: 8, // Base spacing unit (8px)
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
             textTransform: 'none', // YouTube uses lowercase buttons
             borderRadius: 2,
-          },
-        },
-      },
-      MuiTableCell: {
-        styleOverrides: {
-          root: {
-            padding: '4px 8px', // Reduced from default 16px to use more space
-          },
-          head: {
-            backgroundColor: '#FF0000', // YouTube's signature red
-            color: '#FFFFFF',
-            fontWeight: 500,
-            padding: '6px 8px', // Slightly more padding for headers
+            minHeight: 44, // Touch-friendly minimum height for mobile
+            padding: '8px 16px',
           },
         },
       },
@@ -70,6 +69,37 @@ const createAppTheme = (mode: 'light' | 'dark') => {
           root: {
             '& .MuiInputBase-root': {
               padding: '0 4px', // Reduced input padding
+              '@media (max-width:599.95px)': {
+                fontSize: '16px', // Prevent zoom on iOS when focusing inputs
+              },
+            },
+          },
+        },
+      },
+      MuiFormControl: {
+        styleOverrides: {
+          root: {
+            width: '100%', // Full width form controls
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            padding: '4px 8px', // Reduced from default 16px to use more space
+            '@media (max-width:599.95px)': {
+              padding: '8px 4px', // Slightly more padding on mobile for readability
+              fontSize: '0.875rem',
+            },
+          },
+          head: {
+            backgroundColor: '#FF0000', // YouTube's signature red
+            color: '#FFFFFF',
+            fontWeight: 500,
+            padding: '6px 8px', // Slightly more padding for headers
+            '@media (max-width:599.95px)': {
+              padding: '8px 4px',
+              fontSize: '0.875rem',
             },
           },
         },
@@ -79,6 +109,16 @@ const createAppTheme = (mode: 'light' | 'dark') => {
           root: {
             backgroundColor: '#1a1a1a', // Dark background for header
             color: '#FFFFFF', // White text for header
+          },
+        },
+      },
+      MuiContainer: {
+        styleOverrides: {
+          root: {
+            '@media (max-width:599.95px)': {
+              paddingLeft: 16,
+              paddingRight: 16,
+            },
           },
         },
       },

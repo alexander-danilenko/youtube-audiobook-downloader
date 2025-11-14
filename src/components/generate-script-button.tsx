@@ -46,12 +46,29 @@ export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrows
 
   return (
     <>
-      <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-        <Button onClick={handleClick} variant="contained" color="primary" size="large" startIcon={<ContentCopyIcon />} disabled={isDisabled}>
+      <Box
+        sx={{
+          mt: { xs: 2, sm: 4 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          width: '100%',
+        }}
+      >
+        <Button
+          onClick={handleClick}
+          variant="contained"
+          color="primary"
+          size="large"
+          startIcon={<ContentCopyIcon />}
+          disabled={isDisabled}
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
+        >
           {t('script_generation_get_download_command')}
         </Button>
         {hasInvalidBooks && (
-          <Alert severity="error" sx={{ width: '100%', maxWidth: 600 }}>
+          <Alert severity="error" sx={{ width: '100%', maxWidth: { xs: '100%', sm: 600 } }}>
             {t('script_generation_error_invalid_books')}
           </Alert>
         )}

@@ -35,11 +35,41 @@ export function BookList({ books, onBooksChange, onThumbnailClick }: BookListPro
           />
         ))}
       </Box>
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1, width: '100%', maxWidth: 'none' }}>
-        <CsvImportExport books={books} onBooksChange={onBooksChange} onImport={handleImportedBooks} />
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
+      <Box
+        sx={{
+          mt: 2,
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'flex-end',
+          gap: 1,
+          width: '100%',
+          maxWidth: 'none',
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleAddRow}
+          sx={{
+            width: { xs: '100%', sm: 'auto' },
+            whiteSpace: 'nowrap',
+            order: { xs: 1, sm: 2 },
+          }}
+        >
           {t('books_add_new_book')}
         </Button>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 1,
+            width: { xs: '100%', sm: 'auto' },
+            order: { xs: 2, sm: 1 },
+          }}
+        >
+          <CsvImportExport books={books} onBooksChange={onBooksChange} onImport={handleImportedBooks} />
+        </Box>
       </Box>
     </Box>
   );

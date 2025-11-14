@@ -18,14 +18,21 @@ export function FilenameTemplateInput({ value, onChange }: FilenameTemplateInput
 
   return (
     <Box>
-      <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+      <Typography variant="body2" sx={{ mb: 1, fontWeight: 500, whiteSpace: 'nowrap' }}>
         {t('settings_filename_template')}
       </Typography>
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: 1,
+          alignItems: { xs: 'stretch', sm: 'center' },
+        }}
+      >
         <TextField
-        id="filename-template"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+          id="filename-template"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           placeholder={DEFAULT_FILENAME_TEMPLATE}
           fullWidth
           variant="outlined"
@@ -45,7 +52,11 @@ export function FilenameTemplateInput({ value, onChange }: FilenameTemplateInput
           onClick={handleReset}
           variant="outlined"
           size="small"
-          sx={{ flexShrink: 0, height: '40px' }}
+          sx={{
+            flexShrink: 0,
+            height: { xs: '44px', sm: '40px' },
+            width: { xs: '100%', sm: 'auto' },
+          }}
         >
           {t('settings_reset')}
         </Button>

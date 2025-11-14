@@ -52,21 +52,38 @@ export default function Home() {
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
       <AppHeader />
       
-      <Box component="main" sx={{ flexGrow: 1, py: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, py: { xs: 2, sm: 3 } }}>
         <Container maxWidth="xl">
-          <Stack spacing={3}>
+          <Stack spacing={{ xs: 2, sm: 3 }}>
             {/* Introduction Section */}
-            <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper' }}>
+            <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'background.paper' }}>
               {tMarkdown('introduction_section')}
             </Paper>
 
             {/* Book Table Section */}
             <Paper elevation={0} sx={{ bgcolor: 'background.paper', overflow: 'hidden' }}>
-              <Box sx={{ p: 3, pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h6" component="h2" sx={{ fontWeight: 500 }}>
+              <Box
+                sx={{
+                  p: { xs: 2, sm: 3 },
+                  pb: 2,
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  justifyContent: 'space-between',
+                  alignItems: { xs: 'stretch', sm: 'center' },
+                  gap: { xs: 2, sm: 0 },
+                }}
+              >
+                <Typography variant="h6" component="h2" sx={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
                   {t('books_title')}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: 1,
+                    width: { xs: '100%', sm: 'auto' },
+                  }}
+                >
                   <Button
                     size="small"
                     variant="outlined"
@@ -75,6 +92,7 @@ export default function Home() {
                     disabled={books.length === 0}
                     sx={{
                       borderWidth: 2,
+                      width: { xs: '100%', sm: 'auto' },
                       '&.MuiButton-outlined': {
                         borderColor: (theme) => theme.palette.mode === 'dark' 
                           ? 'rgba(255, 255, 255, 0.5)' 
@@ -104,6 +122,7 @@ export default function Home() {
                     disabled={books.length === 0}
                     sx={{
                       borderWidth: 2,
+                      width: { xs: '100%', sm: 'auto' },
                       '&.MuiButton-outlined': {
                         borderColor: (theme) => theme.palette.mode === 'dark' 
                           ? 'rgba(255, 255, 255, 0.5)' 
@@ -135,7 +154,7 @@ export default function Home() {
             </Paper>
 
             {/* Settings Section */}
-            <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper' }}>
+            <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'background.paper' }}>
               <Settings
                 filenameTemplate={filenameTemplate}
                 cookiesBrowser={cookiesBrowser}
@@ -147,7 +166,7 @@ export default function Home() {
             </Paper>
 
             {/* Script Generation Section */}
-            <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper' }}>
+            <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'background.paper' }}>
               <Stack spacing={2}>
                 <Alert severity="warning">
                   {tMarkdown('script_generation_warning_text')}

@@ -87,13 +87,54 @@ export function BookTable({ books, onBooksChange, onThumbnailClick }: BookTableP
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1, width: '100%', maxWidth: 'none' }}>
-        <CsvImportExport books={books} onBooksChange={onBooksChange} />
-        <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={handleCleanClick} disabled={books.length === 0}>
-          Clean
-        </Button>
-        <Button variant="outlined" color="primary" startIcon={<AddIcon />} onClick={handleAddRow}>
+      <Box
+        sx={{
+          mt: 2,
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'flex-end',
+          gap: 1,
+          width: '100%',
+          maxWidth: 'none',
+        }}
+      >
+        <Button
+          variant="outlined"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleAddRow}
+          sx={{
+            width: { xs: '100%', sm: 'auto' },
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            order: { xs: 1, sm: 3 },
+          }}
+        >
           Add New Book
+        </Button>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 1,
+            width: { xs: '100%', sm: 'auto' },
+            order: { xs: 2, sm: 1 },
+          }}
+        >
+          <CsvImportExport books={books} onBooksChange={onBooksChange} />
+        </Box>
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={handleCleanClick}
+          disabled={books.length === 0}
+          sx={{
+            width: { xs: '100%', sm: 'auto' },
+            order: { xs: 3, sm: 2 },
+          }}
+        >
+          Clean
         </Button>
       </Box>
 

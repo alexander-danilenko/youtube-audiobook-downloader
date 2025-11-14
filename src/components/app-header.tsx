@@ -27,29 +27,64 @@ export function AppHeader() {
 
   return (
     <AppBar position="static" elevation={0}>
-      <Container maxWidth="xl" sx={{ width: '100%', py: 2 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Container maxWidth="xl" sx={{ width: '100%', py: { xs: 1.5, sm: 2 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 2, sm: 0 },
+          }}
+        >
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5, width: { xs: '100%', sm: 'auto' } }}>
             <Box
               component="img"
               src={logoPath}
               alt="YouTube"
               sx={{
-                width: 64,
-                height: 64,
+                width: { xs: 48, sm: 64 },
+                height: { xs: 48, sm: 64 },
                 flexShrink: 0,
               }}
             />
-            <Box>
-              <Typography variant="h6" component="h1" sx={{ fontWeight: 500 }}>
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Typography
+                variant="h6"
+                component="h1"
+                sx={{
+                  fontWeight: 500,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
                 {t('app_title')}
               </Typography>
-              <Typography variant="caption" sx={{ opacity: 0.9, display: 'block', mt: 0.5 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  opacity: 0.9,
+                  display: 'block',
+                  mt: 0.5,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
                 {t('app_subtitle')}
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              width: { xs: '100%', sm: 'auto' },
+              justifyContent: { xs: 'flex-end', sm: 'flex-start' },
+            }}
+          >
             <IconButton
               component="a"
               href="https://github.com/alexander-danilenko/youtube-audiobook-download-helper"
@@ -66,7 +101,7 @@ export function AppHeader() {
               <GitHubIcon />
             </IconButton>
             <ThemeSwitcher />
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ minWidth: { xs: 100, sm: 120 } }}>
               <Select
                 value={currentLang}
                 onChange={(e) => handleLanguageChange(e.target.value as Language)}
