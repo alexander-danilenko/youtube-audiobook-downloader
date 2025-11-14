@@ -9,14 +9,14 @@ export class BookService {
   /**
    * Validates a book using the bookDtoSchema
    */
-  public validateBook(book: BookDto): z.SafeParseReturnType<BookDto, BookDto> {
+  public validateBook(book: BookDto): ReturnType<typeof bookDtoSchema.safeParse> {
     return bookDtoSchema.safeParse(book);
   }
 
   /**
    * Validates multiple books and returns validation results
    */
-  public validateBooks(books: BookDto[]): Array<{ book: BookDto; result: z.SafeParseReturnType<BookDto, BookDto> }> {
+  public validateBooks(books: BookDto[]): Array<{ book: BookDto; result: ReturnType<typeof bookDtoSchema.safeParse> }> {
     return books.map((book) => ({
       book,
       result: this.validateBook(book),
@@ -27,7 +27,7 @@ export class BookService {
    * Extracts field-level validation errors from a validation result
    * Returns errors with translation keys (caller should translate them)
    */
-  public extractFieldErrors(validationResult: z.SafeParseReturnType<BookDto, BookDto>): FieldErrors {
+  public extractFieldErrors(validationResult: ReturnType<typeof bookDtoSchema.safeParse>): FieldErrors {
     if (validationResult.success) {
       return {};
     }

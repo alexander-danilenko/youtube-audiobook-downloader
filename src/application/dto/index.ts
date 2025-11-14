@@ -1,3 +1,4 @@
-export { BookDto, bookDtoSchema, bookDtoArraySchema } from './book-dto';
-export { ScriptGenerationDto, ScriptGenerationResult } from './script-generation-dto';
+export type { BookDto } from './book-dto';
+export { bookDtoSchema, bookDtoArraySchema } from './book-dto';
+export type { ScriptGenerationDto, ScriptGenerationResult } from './script-generation-dto';
 

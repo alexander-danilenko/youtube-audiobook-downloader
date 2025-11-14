@@ -5,7 +5,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import DownloadIcon from '@mui/icons-material/Download';
 import { BookDto } from '@/application/dto';
 import { useCsvImportExport } from '@/hooks/use-csv-import-export';
-import { useTranslation } from '@/i18n';
+import { useTranslation, useTranslationString } from '@/i18n';
 
 interface CsvImportExportProps {
   books: BookDto[];
@@ -15,15 +15,16 @@ interface CsvImportExportProps {
 
 export function CsvImportExport({ books, onBooksChange, onImport }: CsvImportExportProps) {
   const { t } = useTranslation();
+  const tString = useTranslationString();
 
   const CSV_COLUMNS = [
-    { key: 'url' as const, label: t('book_card_youtube_url') },
-    { key: 'title' as const, label: t('book_card_book_title') },
-    { key: 'author' as const, label: t('book_card_author') },
-    { key: 'narrator' as const, label: t('book_card_narrator') },
-    { key: 'series' as const, label: t('book_card_series_name') },
-    { key: 'seriesNumber' as const, label: t('book_card_series_number') },
-    { key: 'year' as const, label: t('book_card_year') },
+    { key: 'url' as const, label: tString('book_card_youtube_url') },
+    { key: 'title' as const, label: tString('book_card_book_title') },
+    { key: 'author' as const, label: tString('book_card_author') },
+    { key: 'narrator' as const, label: tString('book_card_narrator') },
+    { key: 'series' as const, label: tString('book_card_series_name') },
+    { key: 'seriesNumber' as const, label: tString('book_card_series_number') },
+    { key: 'year' as const, label: tString('book_card_year') },
   ];
 
   const {

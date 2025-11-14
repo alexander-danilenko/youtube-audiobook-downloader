@@ -1,3 +1,3 @@
-export { IThumbnailRepository } from './i-thumbnail-repository';
-export { IYouTubeMetadataRepository, type YouTubeMetadata } from './i-youtube-metadata-repository';
+export type { IThumbnailRepository } from './i-thumbnail-repository';
+export type { IYouTubeMetadataRepository, YouTubeMetadata } from './i-youtube-metadata-repository';
 
