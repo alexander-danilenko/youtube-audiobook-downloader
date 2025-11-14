@@ -23,6 +23,7 @@
     "book_card_required": { "type": "string" },
     "book_card_no_preview": { "type": "string" },
     "book_card_youtube_url_helper": { "type": "string" },
+    "book_card_paste_url": { "type": "string" },
     "book_card_book_title_helper": { "type": "string" },
     "book_card_author_helper": { "type": "string" },
     "book_card_narrator_helper": { "type": "string" },

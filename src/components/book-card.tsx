@@ -1,10 +1,11 @@
 'use client';
 
-import { TextField, Box, Paper, Typography, IconButton, InputAdornment, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button, Radio, FormControlLabel, Collapse } from '@mui/material';
+import { TextField, Box, Paper, Typography, IconButton, InputAdornment, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button, Radio, FormControlLabel, Collapse, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import { BookDto, bookDtoSchema } from '../application/dto/book-dto';
 import { useThumbnail } from '../hooks/use-thumbnail';
 import { useYouTubeMetadata } from '../hooks/use-youtube-metadata';
@@ -38,14 +39,16 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
   const changeThrottleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pasteIgnoreRef = useRef<boolean>(false);
+  const lastLocalUpdateRef = useRef<number>(0);
+  const freezeUntilRef = useRef<number>(0);
   
   // Local state for immediate UI updates (no lag)
   const [localBook, setLocalBook] = useState<BookDto>(book);
   
-  // Sync local state with prop changes from parent
+  // Sync local state with prop changes from parent — only when the book id changes
   useEffect(() => {
     setLocalBook(book);
-  }, [book]);
+  }, [book.id]);
   
   // Comparison dialog state
   const [comparisonDialogOpen, setComparisonDialogOpen] = useState(false);
@@ -172,7 +175,8 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
     }
   }, [localBook, isUrlValid, fetchMetadata, onBookChange]);
 
-  const handleChange = useCallback((key: keyof BookDto, value: string | number | undefined) => {
+  const handleChange = useCallback((key: keyof BookDto, value: string | number | undefined, options?: { skipDebounce?: boolean }) => {
+    const skipDebounce = options?.skipDebounce ?? false;
     let parsedValue: string | number | undefined = value;
     if (key === 'seriesNumber') {
       parsedValue = parseInt(value as string, 10);
@@ -185,28 +189,30 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
     // Update local state immediately for responsive UI (no lag)
     setLocalBook((prev) => {
       const updatedBook = { ...prev, [key]: parsedValue };
-      
-      // Debounce parent updates
-      if (changeThrottleRef.current) {
-        clearTimeout(changeThrottleRef.current);
-      }
-      
-      changeThrottleRef.current = setTimeout(() => {
-        onBookChange(updatedBook);
-        
-        // Auto-fetch metadata for URL changes
-        if (key === 'url' && typeof parsedValue === 'string' && parsedValue && !skipAutoMetadataFetch) {
-          const urlValue = parsedValue.trim();
-          if (urlValue) {
-            if (fetchTimeoutRef.current) {
-              clearTimeout(fetchTimeoutRef.current);
-            }
-            fetchTimeoutRef.current = setTimeout(() => {
-              attemptFetchMetadata(urlValue);
-            }, 500);
-          }
+
+      if (!skipDebounce) {
+        // Debounce parent updates
+        if (changeThrottleRef.current) {
+          clearTimeout(changeThrottleRef.current);
         }
-      }, 500);
+
+        changeThrottleRef.current = setTimeout(() => {
+          onBookChange(updatedBook);
+
+          // Auto-fetch metadata for URL changes
+          if (key === 'url' && typeof parsedValue === 'string' && parsedValue && !skipAutoMetadataFetch) {
+            const urlValue = parsedValue.trim();
+            if (urlValue) {
+              if (fetchTimeoutRef.current) {
+                clearTimeout(fetchTimeoutRef.current);
+              }
+              fetchTimeoutRef.current = setTimeout(() => {
+                attemptFetchMetadata(urlValue);
+              }, 500);
+            }
+          }
+        }, 500);
+      }
       
       return updatedBook;
     });
@@ -250,44 +256,118 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
     }
   }, [localBook, normalizeYouTubeUrl, handleChange, attemptFetchMetadata, skipAutoMetadataFetch]);
 
-  const handleUrlPaste = useCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
+  const handlePasteClick = useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text) return;
+      const raw = text.trim();
+      const normalized = normalizeYouTubeUrl(raw);
+
+      const valueToSet = normalized || raw;
+      // set local state immediately so disabled input shows value
+      const updatedImmediate = { ...localBook, url: valueToSet };
+      setLocalBook(updatedImmediate);
+      handleChange('url', valueToSet, { skipDebounce: true });
+      // Immediately propagate to parent to avoid later debounce overwriting
+      onBookChange(updatedImmediate);
+
+      // Clear any pending debounced change just in case
+      if (changeThrottleRef.current) {
+        clearTimeout(changeThrottleRef.current);
+        changeThrottleRef.current = null;
+      }
+
+      // If normalized, fetch metadata immediately (don't rely on isUrlValid timing)
+      if (normalized && !skipAutoMetadataFetch) {
+        try {
+          const metadata = await fetchMetadata(normalized);
+          if (metadata) {
+            const diffs: MetadataComparison[] = [];
+            if (localBook.title.trim() && localBook.title !== metadata.title) {
+              diffs.push({ fieldName: 'title', current: localBook.title, fetched: metadata.title });
+            }
+            if (localBook.author.trim() && localBook.author !== metadata.authorName) {
+              diffs.push({ fieldName: 'author', current: localBook.author, fetched: metadata.authorName });
+            }
+
+            if (diffs.length > 0) {
+              setComparisons(diffs);
+              setSelectedValues(Object.fromEntries(diffs.map(d => [d.fieldName, 'current'])));
+              setComparisonDialogOpen(true);
+            } else {
+              const updatedBook = {
+                ...localBook,
+                url: valueToSet,
+                title: localBook.title.trim() || metadata.title,
+                author: localBook.author.trim() || metadata.authorName,
+              };
+              setLocalBook(updatedBook);
+              onBookChange(updatedBook);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to fetch metadata after paste:', err);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to read clipboard:', err);
+    }
+  }, [handleChange, fetchMetadata, localBook, onBookChange, skipAutoMetadataFetch]);
+
+  const handleUrlPaste = useCallback(async (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pastedRaw = e.clipboardData.getData('text') || '';
     const pasted = pastedRaw.trim();
-    const normalized = normalizeYouTubeUrl(pasted);
+    if (!pasted) return;
 
-    // Prevent default to avoid DOM-only paste into controlled input
     e.preventDefault();
 
-    if (normalized) {
-      // Immediately update native input and controlled state with normalized URL
-      try {
-        const input = e.currentTarget as HTMLInputElement;
-        input.value = normalized;
-        input.setSelectionRange(normalized.length, normalized.length);
-      } catch (err) {
-        // ignore
-      }
-      setLocalBook((prev) => ({ ...prev, url: normalized }));
-      handleChange('url', normalized);
+    const normalized = normalizeYouTubeUrl(pasted);
+    const valueToSet = normalized || pasted;
 
-      if (!skipAutoMetadataFetch) {
-        if (fetchTimeoutRef.current) clearTimeout(fetchTimeoutRef.current);
-        fetchTimeoutRef.current = setTimeout(() => attemptFetchMetadata(normalized), 500);
-      }
-    } else {
-      // If normalization fails, keep the raw pasted value in the input (do not fetch metadata)
-      try {
-        const input = e.currentTarget as HTMLInputElement;
-        input.value = pasted;
-        input.setSelectionRange(pasted.length, pasted.length);
-      } catch (err) {
-        // ignore
-      }
-      setLocalBook((prev) => ({ ...prev, url: pasted }));
-      // Propagate via handleChange so parent state and validation remain consistent
-      handleChange('url', pasted);
+    const updatedImmediate = { ...localBook, url: valueToSet };
+    // Update local and parent immediately, skip debounce to avoid later overwrite
+    setLocalBook(updatedImmediate);
+    handleChange('url', valueToSet, { skipDebounce: true });
+    onBookChange(updatedImmediate);
+
+    // Clear any pending debounced change
+    if (changeThrottleRef.current) {
+      clearTimeout(changeThrottleRef.current);
+      changeThrottleRef.current = null;
     }
-  }, [normalizeYouTubeUrl, handleChange, attemptFetchMetadata, skipAutoMetadataFetch]);
+
+    if (normalized && !skipAutoMetadataFetch) {
+      try {
+        const metadata = await fetchMetadata(normalized);
+        if (metadata) {
+          const diffs: MetadataComparison[] = [];
+          if (localBook.title.trim() && localBook.title !== metadata.title) {
+            diffs.push({ fieldName: 'title', current: localBook.title, fetched: metadata.title });
+          }
+          if (localBook.author.trim() && localBook.author !== metadata.authorName) {
+            diffs.push({ fieldName: 'author', current: localBook.author, fetched: metadata.authorName });
+          }
+
+          if (diffs.length > 0) {
+            setComparisons(diffs);
+            setSelectedValues(Object.fromEntries(diffs.map(d => [d.fieldName, 'current'])));
+            setComparisonDialogOpen(true);
+          } else {
+            const updatedBook = {
+              ...localBook,
+              url: valueToSet,
+              title: localBook.title.trim() || metadata.title,
+              author: localBook.author.trim() || metadata.authorName,
+            };
+            setLocalBook(updatedBook);
+            onBookChange(updatedBook);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch metadata after paste:', err);
+      }
+    }
+  }, [normalizeYouTubeUrl, handleChange, fetchMetadata, localBook, onBookChange, skipAutoMetadataFetch]);
 
   // Derived computed values - use local state for immediate UI updates
   const isEmpty = useMemo(() => (
@@ -397,13 +477,12 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
           </>
         }
         value={localBook.url}
-        onChange={(e) => handleChange('url', e.target.value)} onBlur={handleUrlBlur} onPaste={handleUrlPaste}
         fullWidth
         variant="outlined"
         size="small"
-        disabled={isLoading}
+        disabled={true}
         helperText={fieldErrors.url || t('book_card_youtube_url_helper')}
-        error={Boolean(fieldErrors.url || (!localBook.url?.trim() || (isUrlValid && (metadataError || (!!thumbnailUrl && !isThumbnailLoaded)))))}
+        error={Boolean(fieldErrors.url || (!localBook.url?.trim() || (isUrlValid && (metadataError || (!!thumbnailUrl && !isThumbnailLoaded))))) }
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -419,6 +498,21 @@ export function BookCard({ book, onBookChange, onRemove, onThumbnailClick, skipA
             },
           }}
           InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                {localBook.url?.trim() ? (
+                  <IconButton size="small" onClick={handlePasteClick} disabled={false} sx={{ pointerEvents: 'auto' }} aria-label={tString('book_card_paste_url')}>
+                    <ContentPasteIcon fontSize="small" />
+                  </IconButton>
+                ) : (
+                  <Tooltip title={tString('book_card_paste_url')}>
+                    <IconButton size="small" onClick={handlePasteClick} disabled={false} sx={{ pointerEvents: 'auto' }}>
+                      <ContentPasteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </InputAdornment>
+            ),
             endAdornment: (
               <InputAdornment position="end">
                 {isLoading ? (
