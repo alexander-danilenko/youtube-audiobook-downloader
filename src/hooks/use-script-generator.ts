@@ -2,17 +2,17 @@ import { useCallback } from 'react';
 import { container } from '@/infrastructure/di/container';
 import { GenerateShellScriptUseCase } from '@/application/use-cases';
 import { BookDto } from '@/application/dto';
-import { CookiesBrowser } from '@/application/stores';
+import { CookiesBrowser, AudioBitrate } from '@/application/stores';
 
 export function useScriptGenerator() {
-  const generateScript = useCallback((books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser): string => {
+  const generateScript = useCallback((books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate): string => {
     const useCase = container.resolve(GenerateShellScriptUseCase);
-    const result = useCase.execute({ books, filenameTemplate, cookiesBrowser });
+    const result = useCase.execute({ books, filenameTemplate, cookiesBrowser, maxAudioBitrate });
     return result.scriptContent;
   }, []);
 
-  const downloadScript = useCallback((books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser) => {
-    const scriptContent = generateScript(books, filenameTemplate, cookiesBrowser);
+  const downloadScript = useCallback((books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate) => {
+    const scriptContent = generateScript(books, filenameTemplate, cookiesBrowser, maxAudioBitrate);
     const blob = new Blob([scriptContent], { type: 'text/x-sh' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -24,9 +24,9 @@ export function useScriptGenerator() {
     URL.revokeObjectURL(url);
   }, [generateScript]);
 
-  const copyDownloadString = useCallback(async (books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser): Promise<void> => {
+  const copyDownloadString = useCallback(async (books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate): Promise<void> => {
     const useCase = container.resolve(GenerateShellScriptUseCase);
-    const downloadString = useCase.executeDownloadString({ books, filenameTemplate, cookiesBrowser });
+    const downloadString = useCase.executeDownloadString({ books, filenameTemplate, cookiesBrowser, maxAudioBitrate });
     
     try {
       await navigator.clipboard.writeText(downloadString);

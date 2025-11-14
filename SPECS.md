@@ -34,7 +34,7 @@ This document defines the functional requirements for the YT Audiobook Download 
 
 ### REQ0038: Settings Fieldset
 - Provide a "Settings" fieldset to group application-wide configuration options.
-- The "Settings" fieldset should contain the Filename Template Input and the Cookies from Browser dropdown.
+- The "Settings" fieldset should contain the Filename Template Input, the Cookies from Browser dropdown, and the Max Audio Bitrate dropdown.
 - Display the fieldset with a legend titled "Settings".
 
 ### REQ0039: Cookies from Browser Dropdown
@@ -42,6 +42,24 @@ This document defines the functional requirements for the YT Audiobook Download 
 - Supported browser options (values): `none` (default), `brave`, `chrome`, `chromium`, `edge`, `firefox`, `opera`, `safari`, `vivaldi`, `whale`.
 - Display "None" for the `none` option and capitalize other browser names in the UI.
 - Include a short description explaining that this feature helps bypass 403 errors and access non-public accessible videos.
+
+### REQ0043: Max Audio Bitrate Dropdown
+- Provide a dropdown within the Settings fieldset to select the maximum audio bitrate for downloaded files.
+- Supported bitrate options (values): `32`, `48`, `64`, `96`, `128`, `160`, `192`, `256`, `320` (numeric values), `original` (default).
+- Display labels with descriptions for each option:
+  - `32kbps - Max file compression, worst quality`
+  - `48kbps - Very high compression, poor quality`
+  - `64kbps - High compression, low quality`
+  - `96kbps - Medium compression, acceptable quality`
+  - `128kbps - Standard compression, good quality`
+  - `160kbps - Low compression, very good quality`
+  - `192kbps - Minimal compression, excellent quality`
+  - `256kbps - Very low compression, near-lossless quality`
+  - `320kbps - Minimal compression, best quality`
+  - `Original (bestaudio)` for the `original` option
+- Include a short description explaining that lower bitrates result in smaller file sizes.
+- When `original` is selected, use format filter `bestaudio[ext=m4a]` without bitrate restriction.
+- When a specific bitrate is selected, use format filter `bestaudio[ext=m4a][abr<=X]` where X is the numeric value (e.g., 128). The `abr` filter accepts just an integer value (abr = average audio bitrate).
 
 ### REQ0014: Filename Template Processing
 - Replace template variables with actual book data when generating filenames
@@ -66,7 +84,7 @@ This document defines the functional requirements for the YT Audiobook Download 
 
 ### REQ0017: yt-dlp Command Format
 - Each generated command shall include:
-  - Format filter (`-f "bestaudio[ext=m4a]"`) to strictly require m4a format only, with no fallback
+  - Format filter (`-f "bestaudio[ext=m4a]"` or `-f "bestaudio[ext=m4a][abr<=X]"` where X is an integer) to strictly require m4a format only, with optional bitrate limitation based on user's Max Audio Bitrate setting
   - Audio extraction flag (`--extract-audio`)
   - Audio format specification (`--audio-format m4a`)
   - Chapter embedding (`--embed-chapters`)
@@ -79,7 +97,7 @@ This document defines the functional requirements for the YT Audiobook Download 
 
 ### REQ0018: State Persistence
 - Automatically save application state to browser storage
-- Persist the following data: book entries, filename template
+- Persist the following data: book entries, filename template, cookies browser setting, max audio bitrate setting
 - Restore saved state when the page is refreshed or reopened
 - Handle storage initialization errors gracefully without breaking the application
 

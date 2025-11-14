@@ -2,22 +2,31 @@
 
 import { Typography, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Stack } from '@mui/material';
 import { FilenameTemplateInput } from './filename-template-input';
-import { CookiesBrowser } from '@/application/stores';
+import { CookiesBrowser, AudioBitrate } from '@/application/stores';
 import { useTranslation } from '@/i18n';
 
 interface SettingsProps {
   filenameTemplate: string;
   cookiesBrowser: CookiesBrowser;
+  maxAudioBitrate: AudioBitrate;
   onFilenameTemplateChange: (value: string) => void;
   onCookiesBrowserChange: (browser: CookiesBrowser) => void;
+  onMaxAudioBitrateChange: (bitrate: AudioBitrate) => void;
 }
 
 const BROWSER_OPTIONS: CookiesBrowser[] = ['none', 'brave', 'chrome', 'chromium', 'edge', 'firefox', 'opera', 'safari', 'vivaldi', 'whale'];
+const BITRATE_OPTIONS: AudioBitrate[] = [32, 48, 64, 96, 128, 160, 192, 256, 320, 'original'];
 
-export function Settings({ filenameTemplate, cookiesBrowser, onFilenameTemplateChange, onCookiesBrowserChange }: SettingsProps) {
+export function Settings({ filenameTemplate, cookiesBrowser, maxAudioBitrate, onFilenameTemplateChange, onCookiesBrowserChange, onMaxAudioBitrateChange }: SettingsProps) {
   const { t } = useTranslation();
   const handleCookiesBrowserChange = (event: SelectChangeEvent<CookiesBrowser>): void => {
     onCookiesBrowserChange(event.target.value as CookiesBrowser);
+  };
+  const handleMaxAudioBitrateChange = (event: SelectChangeEvent<AudioBitrate | string>): void => {
+    const value = event.target.value;
+    // Convert string to number if it's a numeric bitrate
+    const bitrate: AudioBitrate = value === 'original' ? 'original' : (typeof value === 'string' ? parseInt(value, 10) as AudioBitrate : value);
+    onMaxAudioBitrateChange(bitrate);
   };
 
   return (
@@ -46,6 +55,31 @@ export function Settings({ filenameTemplate, cookiesBrowser, onFilenameTemplateC
         </FormControl>
         <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
           {t('settings_cookies_browser_helper')}
+        </Typography>
+        
+        <FormControl fullWidth size="small">
+          <InputLabel id="max-audio-bitrate-label">{t('settings_max_audio_bitrate')}</InputLabel>
+          <Select<AudioBitrate>
+            labelId="max-audio-bitrate-label"
+            id="max-audio-bitrate"
+            value={maxAudioBitrate}
+            label={t('settings_max_audio_bitrate')}
+            onChange={handleMaxAudioBitrateChange}
+          >
+            {BITRATE_OPTIONS.map((bitrate) => {
+              const label = bitrate === 'original' 
+                ? t('settings_bitrate_original')
+                : t(`settings_bitrate_${bitrate}kbps` as keyof typeof t);
+              return (
+                <MenuItem key={bitrate} value={bitrate}>
+                  {label}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+        <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
+          {t('settings_max_audio_bitrate_helper')}
         </Typography>
       </Stack>
     </Stack>

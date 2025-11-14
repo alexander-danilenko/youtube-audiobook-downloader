@@ -13,7 +13,8 @@ export class GenerateShellScriptUseCase {
     const scriptContent = this.scriptGenerator.generateScript(
       input.books,
       input.filenameTemplate,
-      input.cookiesBrowser
+      input.cookiesBrowser,
+      input.maxAudioBitrate
     );
 
     return {
@@ -25,7 +26,8 @@ export class GenerateShellScriptUseCase {
     return this.scriptGenerator.generateDownloadString(
       input.books,
       input.filenameTemplate,
-      input.cookiesBrowser
+      input.cookiesBrowser,
+      input.maxAudioBitrate
     );
   }
 }

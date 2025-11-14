@@ -17,10 +17,13 @@ const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
 
 export type CookiesBrowser = 'none' | 'brave' | 'chrome' | 'chromium' | 'edge' | 'firefox' | 'opera' | 'safari' | 'vivaldi' | 'whale';
 
+export type AudioBitrate = 32 | 48 | 64 | 96 | 128 | 160 | 192 | 256 | 320 | 'original';
+
 export interface AppState {
   books: BookDto[];
   filenameTemplate: string;
   cookiesBrowser: CookiesBrowser;
+  maxAudioBitrate: AudioBitrate;
   columnWidths: Record<string, number>;
   collapsedBookIds: Set<string>;
 }
@@ -29,6 +32,7 @@ interface AppStore extends AppState {
   setBooks: (books: BookDto[]) => void;
   setFilenameTemplate: (template: string) => void;
   setCookiesBrowser: (browser: CookiesBrowser) => void;
+  setMaxAudioBitrate: (bitrate: AudioBitrate) => void;
   setColumnWidths: (widths: Record<string, number>) => void;
   setCollapsedBookIds: (collapsedBookIds: Set<string>) => void;
   toggleBookCollapsed: (bookId: string) => void;
@@ -53,6 +57,7 @@ const defaultState: AppState = {
   ],
   filenameTemplate: DEFAULT_FILENAME_TEMPLATE,
   cookiesBrowser: 'none',
+  maxAudioBitrate: 'original' as AudioBitrate,
   columnWidths: DEFAULT_COLUMN_WIDTHS,
   collapsedBookIds: new Set<string>(),
 };
@@ -62,6 +67,7 @@ export const useAppStore = create<AppStore>((set) => ({
   setBooks: (books: BookDto[]) => set({ books }),
   setFilenameTemplate: (filenameTemplate: string) => set({ filenameTemplate }),
   setCookiesBrowser: (cookiesBrowser: CookiesBrowser) => set({ cookiesBrowser }),
+  setMaxAudioBitrate: (maxAudioBitrate: AudioBitrate) => set({ maxAudioBitrate }),
   setColumnWidths: (columnWidths: Record<string, number>) => set({ columnWidths }),
   setCollapsedBookIds: (collapsedBookIds: Set<string>) => set({ collapsedBookIds }),
   toggleBookCollapsed: (bookId: string) => set((state) => {

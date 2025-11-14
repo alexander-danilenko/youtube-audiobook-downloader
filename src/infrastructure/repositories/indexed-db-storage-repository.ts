@@ -1,5 +1,5 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
-import { CookiesBrowser } from '@/application/stores';
+import { CookiesBrowser, AudioBitrate } from '@/application/stores';
 
 interface AppStateDb extends DBSchema {
   'app-state': {
@@ -8,6 +8,7 @@ interface AppStateDb extends DBSchema {
       books: unknown[];
       filenameTemplate: string;
       cookiesBrowser: CookiesBrowser;
+      maxAudioBitrate?: AudioBitrate;
       columnWidths: Record<string, number>;
       collapsedBookIds?: string[];
     };
@@ -45,6 +46,7 @@ export class IndexedDbStorageRepository {
     books: unknown[];
     filenameTemplate: string;
     cookiesBrowser: CookiesBrowser;
+    maxAudioBitrate?: AudioBitrate;
     columnWidths: Record<string, number>;
     collapsedBookIds?: string[];
   }): Promise<void> {
@@ -68,6 +70,7 @@ export class IndexedDbStorageRepository {
     books: unknown[];
     filenameTemplate: string;
     cookiesBrowser?: CookiesBrowser;
+    maxAudioBitrate?: AudioBitrate;
     columnWidths: Record<string, number>;
     collapsedBookIds?: string[];
   } | null> {

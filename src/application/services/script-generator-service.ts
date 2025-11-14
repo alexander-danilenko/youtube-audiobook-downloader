@@ -1,28 +1,29 @@
 import { BookDto } from '@/application/dto';
-import { CookiesBrowser } from '@/application/stores';
+import { CookiesBrowser, AudioBitrate } from '@/application/stores';
 
 export class ScriptGeneratorService {
   private readonly defaultTemplate = '$author - [$series - $series_num] - $title [$narrator].%(ext)s';
 
-  public generateScript(books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser): string {
+  public generateScript(books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate): string {
     const template = filenameTemplate || this.defaultTemplate;
-    const commands = books.map((book) => this.generateCommand(book, template, cookiesBrowser));
+    const commands = books.map((book) => this.generateCommand(book, template, cookiesBrowser, maxAudioBitrate));
     return commands.join('\n\n');
   }
 
-  public generateDownloadString(books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser): string {
+  public generateDownloadString(books: BookDto[], filenameTemplate: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate): string {
     const template = filenameTemplate || this.defaultTemplate;
-    const commands = books.map((book) => this.generateOneLineCommand(book, template, cookiesBrowser));
+    const commands = books.map((book) => this.generateOneLineCommand(book, template, cookiesBrowser, maxAudioBitrate));
     return commands.join(' && ');
   }
 
-  private generateCommand(book: BookDto, template: string, cookiesBrowser: CookiesBrowser): string {
+  private generateCommand(book: BookDto, template: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate): string {
     const filename = this.processFilenameTemplate(book, template);
     const escapedFilename = this.escapeShellString(filename);
     const escapedUrl = this.escapeShellString(book.url);
     const cookiesOption = cookiesBrowser !== 'none' ? `  --cookies-from-browser "${cookiesBrowser}" \\\n` : '';
+    const formatFilter = this.buildFormatFilter(maxAudioBitrate);
 
-    return `yt-dlp -f "bestaudio[ext=m4a]" --extract-audio --audio-format m4a --embed-chapters --embed-metadata \\
+    return `yt-dlp -f "${formatFilter}" --extract-audio --audio-format m4a --embed-chapters --embed-metadata \\
   --embed-thumbnail --convert-thumbnails jpg \\${cookiesOption}
   --replace-in-metadata "genre" ".*" "Audiobook" \\
   --parse-metadata "${this.escapeShellString(book.title)}:%(title)s" \\
@@ -35,13 +36,22 @@ export class ScriptGeneratorService {
   "${escapedUrl}"`;
   }
 
-  private generateOneLineCommand(book: BookDto, template: string, cookiesBrowser: CookiesBrowser): string {
+  private generateOneLineCommand(book: BookDto, template: string, cookiesBrowser: CookiesBrowser, maxAudioBitrate: AudioBitrate): string {
     const filename = this.processFilenameTemplate(book, template);
     const escapedFilename = this.escapeShellString(filename);
     const escapedUrl = this.escapeShellString(book.url);
     const cookiesOption = cookiesBrowser !== 'none' ? ` --cookies-from-browser "${cookiesBrowser}"` : '';
+    const formatFilter = this.buildFormatFilter(maxAudioBitrate);
 
-    return `yt-dlp -f "bestaudio[ext=m4a]" --extract-audio --audio-format m4a --embed-chapters --embed-metadata --embed-thumbnail --convert-thumbnails jpg${cookiesOption} --replace-in-metadata "genre" ".*" "Audiobook" --parse-metadata "${this.escapeShellString(book.title)}:%(title)s" --parse-metadata "${this.escapeShellString(book.author)}:%(artist)s" --parse-metadata "${this.escapeShellString(book.series || '')}:%(album)s" --parse-metadata "${this.escapeShellString(book.narrator || '')}:%(composer)s" --parse-metadata "${this.escapeShellString(book.seriesNumber?.toString() || '')}:%(track_number)s" --postprocessor-args "ffmpeg:-c:a copy" -o "${escapedFilename}" "${escapedUrl}"`;
+    return `yt-dlp -f "${formatFilter}" --extract-audio --audio-format m4a --embed-chapters --embed-metadata --embed-thumbnail --convert-thumbnails jpg${cookiesOption} --replace-in-metadata "genre" ".*" "Audiobook" --parse-metadata "${this.escapeShellString(book.title)}:%(title)s" --parse-metadata "${this.escapeShellString(book.author)}:%(artist)s" --parse-metadata "${this.escapeShellString(book.series || '')}:%(album)s" --parse-metadata "${this.escapeShellString(book.narrator || '')}:%(composer)s" --parse-metadata "${this.escapeShellString(book.seriesNumber?.toString() || '')}:%(track_number)s" --postprocessor-args "ffmpeg:-c:a copy" -o "${escapedFilename}" "${escapedUrl}"`;
+  }
+
+  private buildFormatFilter(maxAudioBitrate: AudioBitrate): string {
+    if (maxAudioBitrate === 'original') {
+      return 'bestaudio[ext=m4a]';
+    }
+    // yt-dlp abr filter accepts just an integer
+    return `bestaudio[ext=m4a][abr<=${maxAudioBitrate}]`;
   }
 
   private processFilenameTemplate(book: BookDto, template: string): string {

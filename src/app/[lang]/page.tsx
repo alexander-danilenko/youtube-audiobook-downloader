@@ -32,9 +32,11 @@ export default function Home() {
   const books = useAppStore((state) => state.books);
   const filenameTemplate = useAppStore((state) => state.filenameTemplate);
   const cookiesBrowser = useAppStore((state) => state.cookiesBrowser);
+  const maxAudioBitrate = useAppStore((state) => state.maxAudioBitrate);
   const setBooks = useAppStore((state) => state.setBooks);
   const setFilenameTemplate = useAppStore((state) => state.setFilenameTemplate);
   const setCookiesBrowser = useAppStore((state) => state.setCookiesBrowser);
+  const setMaxAudioBitrate = useAppStore((state) => state.setMaxAudioBitrate);
   const expandAllBooks = useAppStore((state) => state.expandAllBooks);
   const collapseAllBooks = useAppStore((state) => state.collapseAllBooks);
 
@@ -137,8 +139,10 @@ export default function Home() {
               <Settings
                 filenameTemplate={filenameTemplate}
                 cookiesBrowser={cookiesBrowser}
+                maxAudioBitrate={maxAudioBitrate}
                 onFilenameTemplateChange={setFilenameTemplate}
                 onCookiesBrowserChange={setCookiesBrowser}
+                onMaxAudioBitrateChange={setMaxAudioBitrate}
               />
             </Paper>
 
@@ -148,7 +152,7 @@ export default function Home() {
                 <Alert severity="warning">
                   {tMarkdown('script_generation_warning_text')}
                 </Alert>
-                <GetDownloadCommandButton books={books} filenameTemplate={filenameTemplate} cookiesBrowser={cookiesBrowser} />
+                <GetDownloadCommandButton books={books} filenameTemplate={filenameTemplate} cookiesBrowser={cookiesBrowser} maxAudioBitrate={maxAudioBitrate} />
               </Stack>
             </Paper>
           </Stack>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, Box, Snackbar, Alert } from '@mui/material';
 import { ContentCopy as ContentCopyIcon } from '@mui/icons-material';
 import { BookDto } from '@/application/dto';
-import { CookiesBrowser } from '@/application/stores';
+import { CookiesBrowser, AudioBitrate } from '@/application/stores';
 import { BookService } from '@/application/services';
 import { useScriptGenerator } from '@/hooks/use-script-generator';
 import { useTranslation } from '@/i18n';
@@ -14,9 +14,10 @@ interface GetDownloadCommandButtonProps {
   books: BookDto[];
   filenameTemplate: string;
   cookiesBrowser: CookiesBrowser;
+  maxAudioBitrate: AudioBitrate;
 }
 
-export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrowser }: GetDownloadCommandButtonProps) {
+export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrowser, maxAudioBitrate }: GetDownloadCommandButtonProps) {
   const { t } = useTranslation();
   const { copyDownloadString } = useScriptGenerator();
   const bookService = useMemo(() => new BookService(), []);
@@ -32,7 +33,7 @@ export function GetDownloadCommandButton({ books, filenameTemplate, cookiesBrows
 
   const handleClick = async (): Promise<void> => {
     try {
-      await copyDownloadString(validBooks, filenameTemplate, cookiesBrowser);
+      await copyDownloadString(validBooks, filenameTemplate, cookiesBrowser, maxAudioBitrate);
       setSnackbarMessage(t('script_generation_copy_success') as string);
       setSnackbarSeverity('success');
       setSnackbarOpen(true);

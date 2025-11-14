@@ -12,6 +12,7 @@ export function usePersistStore(): boolean {
   const books = useAppStore((state) => state.books);
   const filenameTemplate = useAppStore((state) => state.filenameTemplate);
   const cookiesBrowser = useAppStore((state) => state.cookiesBrowser);
+  const maxAudioBitrate = useAppStore((state) => state.maxAudioBitrate);
   const columnWidths = useAppStore((state) => state.columnWidths);
   const collapsedBookIds = useAppStore((state) => state.collapsedBookIds);
 
@@ -31,6 +32,7 @@ export function usePersistStore(): boolean {
             books: savedState.books as AppState['books'],
             filenameTemplate: savedState.filenameTemplate,
             cookiesBrowser: savedState.cookiesBrowser || 'none',
+            maxAudioBitrate: savedState.maxAudioBitrate || 'original',
             columnWidths: savedState.columnWidths,
             collapsedBookIds: savedState.collapsedBookIds ? new Set(savedState.collapsedBookIds) : new Set<string>(),
           });
@@ -62,6 +64,7 @@ export function usePersistStore(): boolean {
           books,
           filenameTemplate,
           cookiesBrowser,
+          maxAudioBitrate,
           columnWidths,
           collapsedBookIds: Array.from(collapsedBookIds),
         });
@@ -78,7 +81,7 @@ export function usePersistStore(): boolean {
         saveTimeoutRef.current = null;
       }
     };
-  }, [books, filenameTemplate, cookiesBrowser, columnWidths, collapsedBookIds]);
+  }, [books, filenameTemplate, cookiesBrowser, maxAudioBitrate, columnWidths, collapsedBookIds]);
 
   return isHydrated;
 }
